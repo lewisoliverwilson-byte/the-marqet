@@ -7,7 +7,7 @@ export default function CategoryCard({ category }) {
   const Icon = iconMap[icon] ?? Cpu
 
   return (
-    <article className="group flex items-start gap-4 rounded-2xl border border-border bg-white p-5 transition-all duration-200 hover:border-accent hover:bg-surface cursor-pointer">
+    <article className="group flex items-start gap-4 rounded-2xl border border-border bg-white p-5 transition-all duration-200 hover:border-accent hover:shadow-md hover:-translate-y-0.5 cursor-pointer">
       <div
         className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl"
         style={{ backgroundColor: `${color}15` }}

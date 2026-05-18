@@ -20,7 +20,7 @@ export default function ListingCard({ listing }) {
   const { category, title, description, creator, price, rating, reviews } = listing
 
   return (
-    <article className="group flex flex-col rounded-2xl border border-border bg-white p-5 transition-all duration-200 hover:border-accent hover:shadow-sm">
+    <article className="group flex flex-col rounded-2xl border border-border bg-white p-5 transition-all duration-200 hover:border-accent hover:shadow-lg hover:-translate-y-0.5">
       <div className="flex items-start justify-between gap-2 mb-3">
         <Badge category={category} />
         <ArrowUpRight

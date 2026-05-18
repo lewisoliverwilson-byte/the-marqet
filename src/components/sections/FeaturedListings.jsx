@@ -3,7 +3,7 @@ import ListingCard from '../ui/ListingCard'
 
 export default function FeaturedListings() {
   return (
-    <section id="featured" className="bg-white py-24 md:py-24">
+    <section id="featured" className="bg-surface py-24 md:py-24">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mb-12">
           <p className="text-[11px] font-semibold uppercase tracking-widest3 text-accent mb-3">Featured</p>

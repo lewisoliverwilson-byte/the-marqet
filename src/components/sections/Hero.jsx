@@ -17,9 +17,12 @@ const marqueeItems = [...BASE_ITEMS, ...BASE_ITEMS, ...BASE_ITEMS, ...BASE_ITEMS
 export default function Hero() {
   return (
     <>
-      <section id="top" className="bg-white pt-32 pb-16 md:pt-40 md:pb-20">
+      <section id="top" className="relative bg-gradient-to-b from-blue-50/60 via-white to-white pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 -top-32 flex justify-center" aria-hidden="true">
+          <div className="h-[480px] w-[680px] rounded-full bg-accent/8 blur-3xl" />
+        </div>
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto max-w-3xl text-center relative">
             <p className="text-[11px] font-semibold uppercase tracking-widest3 text-accent mb-5">
               The AI Add-On Marketplace
             </p>
