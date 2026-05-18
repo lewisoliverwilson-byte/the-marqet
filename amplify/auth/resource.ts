@@ -39,6 +39,5 @@ export const auth = defineAuth({
   },
   userAttributes: {
     preferredUsername: { required: false, mutable: true },
-    picture: { required: false, mutable: true },
   },
 });
