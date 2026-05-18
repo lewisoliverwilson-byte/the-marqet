@@ -1,3 +1,12 @@
+export const CATEGORIES = [
+  { id: 'claude_skill', name: 'Claude Skills', color: '#3B82F6' },
+  { id: 'mcp_server', name: 'MCP Servers', color: '#7C3AED' },
+  { id: 'prompt_pack', name: 'Prompt Packs', color: '#0D9488' },
+  { id: 'workflow', name: 'Workflows', color: '#F59E0B' },
+  { id: 'template', name: 'Templates', color: '#059669' },
+  { id: 'bundle', name: 'Bundles', color: '#E11D48' },
+]
+
 export const categories = [
   {
     id: 'claude-skills',

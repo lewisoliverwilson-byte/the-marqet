@@ -1,51 +1,31 @@
+import { Link } from 'react-router-dom'
 import Logo from '../brand/Logo'
 
 const footerLinks = {
   Marketplace: [
-    'Browse All',
-    'Claude Skills',
-    'MCP Servers',
-    'Prompt Packs',
-    'Workflows',
-    'Templates',
-    'Bundles',
+    { label: 'Browse All', to: '/browse' },
+    { label: 'Claude Skills', to: '/browse?category=claude_skill' },
+    { label: 'MCP Servers', to: '/browse?category=mcp_server' },
+    { label: 'Prompt Packs', to: '/browse?category=prompt_pack' },
+    { label: 'Workflows', to: '/browse?category=workflow' },
+    { label: 'Templates', to: '/browse?category=template' },
+    { label: 'Bundles', to: '/browse?category=bundle' },
   ],
   Sellers: [
-    'Sell Your Work',
-    'Seller Programme',
-    'Listing Guidelines',
-    'Pricing & Commission',
-    { label: 'Seller Dashboard', badge: 'coming soon' },
+    { label: 'Sell Your Work', to: '/#sellers' },
+    { label: 'Submit an Add-On', to: '/submit' },
+    { label: 'Listing Guidelines', to: '/legal/acceptable-use' },
+    { label: 'Pricing & Commission', to: '/#sellers' },
+    { label: 'Dashboard', to: '/dashboard' },
   ],
   Company: [
-    'About The Marqet',
-    'Construx Group',
-    'Contact',
-    'Privacy Policy',
-    'Terms of Service',
+    { label: 'Custom Build', to: '/contact' },
+    { label: 'Contact', to: '/contact' },
+    { label: 'Privacy Policy', to: '/legal/privacy' },
+    { label: 'Terms of Service', to: '/legal/terms' },
+    { label: 'Cookie Policy', to: '/legal/cookies' },
+    { label: 'Acceptable Use', to: '/legal/acceptable-use' },
   ],
-}
-
-function FooterLink({ item }) {
-  const label = typeof item === 'string' ? item : item.label
-  const badge = typeof item === 'object' ? item.badge : null
-
-  return (
-    <li>
-      <a
-        href="#"
-        onClick={(e) => e.preventDefault()}
-        className="text-[14px] text-muted hover:text-white transition-colors duration-150 flex items-center gap-2"
-      >
-        {label}
-        {badge && (
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-dark-mid">
-            {badge}
-          </span>
-        )}
-      </a>
-    </li>
-  )
 }
 
 function TwitterIcon() {
@@ -69,7 +49,6 @@ export default function Footer() {
     <footer className="bg-primary">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12">
-          {/* Column 1: brand */}
           <div>
             <Logo size="sm" reversed className="mb-4" />
             <p className="text-[14px] text-muted leading-relaxed">
@@ -78,47 +57,26 @@ export default function Footer() {
               Built by Construx Group.
             </p>
           </div>
-
-          {/* Columns 2–4: links */}
           {Object.entries(footerLinks).map(([heading, links]) => (
             <div key={heading}>
-              <h4 className="text-[13px] font-semibold uppercase tracking-widest2 text-surface mb-4">
-                {heading}
-              </h4>
+              <h4 className="text-[13px] font-semibold uppercase tracking-widest2 text-surface mb-4">{heading}</h4>
               <ul className="flex flex-col gap-2.5 list-none m-0 p-0">
-                {links.map((link, i) => (
-                  <FooterLink key={i} item={link} />
+                {links.map(link => (
+                  <li key={link.label}>
+                    <Link to={link.to} className="text-[14px] text-muted hover:text-white transition-colors duration-150">
+                      {link.label}
+                    </Link>
+                  </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-
-        {/* Bottom bar */}
-        <div
-          className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8"
-          style={{ borderTop: '1px solid #1F1F1F' }}
-        >
-          <p className="text-[13px] text-dark-mid">
-            © {new Date().getFullYear()} Construx Group. Not affiliated with Anthropic.
-          </p>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8" style={{ borderTop: '1px solid #1F1F1F' }}>
+          <p className="text-[13px] text-dark-mid">© {new Date().getFullYear()} Construx Group. Not affiliated with Anthropic.</p>
           <div className="flex items-center gap-4">
-            <a
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              aria-label="The Marqet on X (Twitter)"
-              className="text-dark-mid hover:text-white transition-colors duration-150"
-            >
-              <TwitterIcon />
-            </a>
-            <a
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              aria-label="The Marqet on GitHub"
-              className="text-dark-mid hover:text-white transition-colors duration-150"
-            >
-              <GitHubIcon />
-            </a>
+            <a href="https://twitter.com" aria-label="The Marqet on X" className="text-dark-mid hover:text-white transition-colors"><TwitterIcon /></a>
+            <a href="https://github.com/lewisoliverwilson-byte/the-marqet" target="_blank" rel="noopener noreferrer" aria-label="The Marqet on GitHub" className="text-dark-mid hover:text-white transition-colors"><GitHubIcon /></a>
           </div>
         </div>
       </div>
