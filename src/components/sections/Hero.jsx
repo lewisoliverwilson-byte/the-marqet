@@ -1,32 +1,18 @@
 import { Star } from 'lucide-react'
 import Button from '../ui/Button'
 
-const marqueeItems = [
-  'Claude Skills',
-  'MCP Servers',
-  'Prompt Packs',
-  'Workflows',
-  'Templates',
-  'Bundles',
-  'Claude Skills',
-  'MCP Servers',
-  'Prompt Packs',
-  'Workflows',
-  'Templates',
-  'Bundles',
-  'Claude Skills',
-  'MCP Servers',
-  'Prompt Packs',
-  'Workflows',
-  'Templates',
-  'Bundles',
-  'Claude Skills',
-  'MCP Servers',
-  'Prompt Packs',
-  'Workflows',
-  'Templates',
-  'Bundles',
+const BASE_ITEMS = [
+  'WORKFLOWS',
+  'TEMPLATES',
+  'BUNDLES',
+  'AGENTS',
+  'INTEGRATIONS',
+  'CLAUDE SKILLS',
+  'MCP SERVERS',
+  'PROMPT PACKS',
 ]
+
+const marqueeItems = [...BASE_ITEMS, ...BASE_ITEMS, ...BASE_ITEMS, ...BASE_ITEMS]
 
 export default function Hero() {
   return (
@@ -45,8 +31,8 @@ export default function Hero() {
             </h1>
 
             <p className="text-[18px] md:text-[20px] text-dark-mid leading-relaxed mx-auto max-w-[560px] mb-8">
-              The Marqet is the curated home for AI add-ons — skills, MCP servers, prompt packs, and more.
-              Find what you need in seconds, or build for the world.
+              Browse, buy, and sell skills, plugins, MCP servers, prompts, and workflows — all in one place.
+              Built for builders, used by everyone.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
@@ -78,9 +64,9 @@ export default function Hero() {
       <div className="bg-primary py-4 overflow-hidden" aria-hidden="true">
         <div className="flex w-max animate-marquee">
           {marqueeItems.map((item, i) => (
-            <span key={i} className="flex items-center gap-3 px-3">
-              <span className="text-[13px] font-medium text-surface whitespace-nowrap">{item}</span>
-              <span className="h-1 w-1 rounded-full bg-accent flex-shrink-0" />
+            <span key={i} className="flex items-center gap-4 px-3">
+              <span className="text-[11px] font-semibold text-surface/70 tracking-widest whitespace-nowrap">{item}</span>
+              <span className="h-1 w-1 rounded-full bg-surface/30 flex-shrink-0" />
             </span>
           ))}
         </div>

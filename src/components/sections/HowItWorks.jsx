@@ -8,17 +8,17 @@ const tabs = {
       {
         icon: Search,
         title: 'Find what you need',
-        description: 'Browse by category or search across the full catalogue. Every add-on is vetted and described clearly.',
+        description: 'Browse by category or search for exactly what you\'re looking for. Every listing is clearly categorised and properly described.',
       },
       {
         icon: ShoppingBag,
-        title: 'One-click install',
-        description: 'Download a zip or copy to clipboard. Step-by-step instructions included on every listing.',
+        title: 'One-click purchase',
+        description: 'Secure checkout in seconds. No subscriptions unless you want them. Pay once, use forever — or subscribe for ongoing updates.',
       },
       {
         icon: Zap,
         title: 'Use it instantly',
-        description: 'Most add-ons take under five minutes to install. Drop the file in the right place and you\'re done.',
+        description: 'Every add-on comes with clear setup instructions. Most take under five minutes to install and configure with Claude.',
       },
     ],
   },
@@ -28,17 +28,17 @@ const tabs = {
       {
         icon: PenTool,
         title: 'Build your add-on',
-        description: 'Create a skill, prompt pack, workflow, or template. Use the format you know — we support everything.',
+        description: 'Create a skill, prompt pack, MCP server, or workflow. Use the format you know — we support everything.',
       },
       {
         icon: Upload,
         title: 'List it for free',
-        description: 'Submit via our structured form. Our team reviews every submission within 48 hours.',
+        description: 'Submit via our structured form. Our team reviews every submission within 48 hours and gives clear feedback.',
       },
       {
         icon: DollarSign,
         title: 'Get paid',
-        description: '20% platform commission. 80% goes to you, paid monthly via Stripe.',
+        description: '20% platform commission. 80% goes to you, paid monthly via Stripe with no minimum threshold.',
       },
     ],
   },
@@ -79,9 +79,12 @@ export default function HowItWorks() {
           {steps.map((step, i) => {
             const Icon = step.icon
             return (
-              <div key={i} className="flex flex-col items-start lg:items-start">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent mb-5">
-                  <Icon size={20} strokeWidth={2} className="text-white" aria-hidden="true" />
+              <div key={i} className="flex flex-col items-start">
+                <p className="text-[11px] font-semibold uppercase tracking-widest3 text-muted mb-3">
+                  Step {i + 1}
+                </p>
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 border border-blue-100 mb-5">
+                  <Icon size={20} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
                 </div>
                 <h3 className="text-[20px] font-bold text-primary leading-snug mb-2">{step.title}</h3>
                 <p className="text-[15px] text-dark-mid leading-relaxed">{step.description}</p>

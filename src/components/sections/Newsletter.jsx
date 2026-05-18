@@ -77,8 +77,8 @@ export default function Newsletter() {
             Be first in the door.
           </h2>
           <p className="text-[18px] text-dark-mid leading-relaxed mb-8">
-            The Marqet is in early access. Join the waitlist and you'll hear from us before we go public — plus
-            first access to founding seller spots.
+            The Marqet is in early access. Join the waitlist to get early access, founding seller status, and
+            updates on everything we're building.
           </p>
 
           <form onSubmit={handleSubmit} noValidate>

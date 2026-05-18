@@ -2,15 +2,15 @@ export const categories = [
   {
     id: 'claude-skills',
     name: 'Claude Skills',
-    description: 'Reusable instruction sets Claude loads automatically when you need them.',
-    count: 48,
+    description: 'Instructions, personas, and skill packs that reshape how Claude behaves.',
+    count: 49,
     color: '#3B82F6',
     icon: 'Cpu',
   },
   {
     id: 'mcp-servers',
     name: 'MCP Servers',
-    description: 'Connect Claude to external services — databases, APIs, and tools.',
+    description: 'Model Context Protocol integrations that connect Claude to apps and APIs.',
     count: 31,
     color: '#7C3AED',
     icon: 'Plug',
@@ -18,7 +18,7 @@ export const categories = [
   {
     id: 'prompt-packs',
     name: 'Prompt Packs',
-    description: 'Curated prompt collections for specific roles, industries, or tasks.',
+    description: 'Curated system prompts and prompt libraries for every use case.',
     count: 67,
     color: '#0D9488',
     icon: 'MessageSquare',
@@ -26,7 +26,7 @@ export const categories = [
   {
     id: 'workflows',
     name: 'Workflows',
-    description: 'Multi-step pipelines that chain actions together automatically.',
+    description: 'Multi-step automation sequences you can deploy in minutes.',
     count: 19,
     color: '#F59E0B',
     icon: 'GitBranch',
@@ -34,7 +34,7 @@ export const categories = [
   {
     id: 'templates',
     name: 'Templates',
-    description: 'Structured starting points for documents, specs, and code scaffolds.',
+    description: 'Ready-made Claude configurations for products, teams, and use cases.',
     count: 34,
     color: '#059669',
     icon: 'Layout',
@@ -42,7 +42,7 @@ export const categories = [
   {
     id: 'bundles',
     name: 'Bundles',
-    description: 'Curated multi-add-on collections built around a single use case.',
+    description: 'Curated collections combining multiple add-ons at a discounted price.',
     count: 12,
     color: '#E11D48',
     icon: 'Package',

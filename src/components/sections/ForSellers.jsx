@@ -3,13 +3,13 @@ import Button from '../ui/Button'
 import { setSellerIntent } from '../../lib/waitlistIntent'
 
 const benefits = [
-  'Free to list — no upfront cost',
-  '80% revenue share on every sale',
-  'Monthly Stripe payouts, no minimum threshold',
-  'Real ratings from verified buyers only',
-  'Featured placement for top-rated add-ons',
-  'Verified developer badge after identity check',
-  'Portable reputation you own, not locked to a platform',
+  'Free to list — no upfront costs',
+  'You set the price (or list for free)',
+  '20% commission — you keep 80%',
+  'Built-in payments via Stripe',
+  'Version management for your listings',
+  'Analytics dashboard — see views and sales',
+  'Priority support for verified sellers',
 ]
 
 export default function ForSellers() {
@@ -35,8 +35,9 @@ export default function ForSellers() {
               an audience.
             </h2>
             <p className="text-[18px] text-muted leading-relaxed max-w-[520px] mb-8">
-              The Marqet gives builders a home for their work — with real ratings, verified buyers, and a revenue
-              share that actually rewards quality. List for free. Get paid when people value what you built.
+              The Marqet is the dedicated marketplace for AI builders. Whether you've built a Claude skill for
+              your own team or an MCP server that connects to every major CRM — there are thousands of users
+              looking for exactly what you've made.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

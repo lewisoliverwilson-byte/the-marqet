@@ -1,44 +1,44 @@
 export const faqs = [
   {
     id: 1,
-    question: 'What is The Marqet?',
+    question: 'What exactly is The Marqet?',
     answer:
-      'The Marqet is a curated marketplace for AI add-ons — skills, MCP servers, prompt packs, workflows, templates, and bundles. We make it easy to find, evaluate, and install tooling that extends what Claude can do. Think of it as an App Store, but for AI tooling.',
+      'The Marqet is a marketplace for AI add-ons built for Claude — and eventually other AI models. You can buy and sell skills (instructions that change how Claude behaves), MCP servers (integrations that connect Claude to apps), prompt packs, workflows, templates, and bundles. Think of it as the App Store for Claude.',
   },
   {
     id: 2,
-    question: 'Is it free to browse and buy?',
+    question: 'Is it free to use?',
     answer:
-      'Browsing is always free. Most add-ons on The Marqet are free to install. Paid add-ons are priced by their creators — you only pay when you choose to. We charge sellers a 20% commission on paid sales; 80% goes directly to the creator.',
+      'Browsing is always free. Most add-ons are free to install. Paid add-ons are priced by their creators — you only pay when you choose to. We charge sellers a 20% commission on paid sales; 80% goes directly to the creator.',
   },
   {
     id: 3,
-    question: 'What can I sell on The Marqet?',
+    question: 'What kinds of add-ons can I sell?',
     answer:
-      'You can sell Claude Skills, MCP servers, prompt packs, workflows, templates, and curated bundles. Every submission goes through a vetting process before it goes live — we check for quality, safety, and originality. Full submission guidelines will be published at launch.',
+      'Claude Skills, MCP servers, prompt packs, workflows, templates, and curated bundles. Every submission goes through a vetting process before it goes live — we check for quality, safety, and originality. Full submission guidelines will be published at launch.',
   },
   {
     id: 4,
-    question: 'Is The Marqet affiliated with Anthropic?',
+    question: 'Do I need a Construx Group account?',
     answer:
-      'No. The Marqet is a Construx Group venture and is not affiliated with, endorsed by, or sponsored by Anthropic. "Claude" is a trademark of Anthropic PBC; we use it in a descriptive, nominative sense only.',
+      'No. The Marqet has its own accounts, separate from any other Construx Group products. Sign up with your email or GitHub — no existing relationship with Construx Group required.',
   },
   {
     id: 5,
-    question: 'When is it launching?',
+    question: 'When is The Marqet launching?',
     answer:
       'The Marqet is in early access. We\'re building the catalogue, vetting the first wave of add-ons, and onboarding our founding sellers now. Join the waitlist and you\'ll hear from us before we go public.',
   },
   {
     id: 6,
-    question: 'Will it support AI models other than Claude?',
+    question: 'Will it work with AI models other than Claude?',
     answer:
       'Claude first, always. But the Agent Skills standard is designed to be portable, and many add-ons already work across Claude, Cursor, Codex CLI, and Gemini CLI. Cross-model compatibility metadata and filtering is on the roadmap.',
   },
   {
     id: 7,
-    question: 'How and when do sellers get paid?',
+    question: 'How does payment work for sellers?',
     answer:
-      'Sellers are paid via Stripe. Once you\'ve listed a paid add-on and completed Stripe\'s identity verification, payouts run monthly. The platform retains 20%; Stripe processes the rest at their standard rates. Donation payouts follow the same schedule.',
+      'Sellers are paid via Stripe. Once you\'ve listed a paid add-on and completed Stripe\'s identity verification, payouts run monthly. The platform retains 20%; Stripe processes the rest at their standard rates.',
   },
 ]
