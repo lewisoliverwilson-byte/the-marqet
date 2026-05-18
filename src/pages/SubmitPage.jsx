@@ -48,7 +48,7 @@ const schema = z.object({
 })
 
 export default function SubmitPage() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const [submitted, setSubmitted] = useState(false)
   const [file, setFile] = useState(null)
   const [compatibility, setCompatibility] = useState(['claude'])
@@ -75,8 +75,7 @@ export default function SubmitPage() {
         license: values.license,
         skill_content: values.skill_content || null,
         compatibility,
-        author_id: user.id,
-      })
+      }, profile)
       if (file && skill) {
         await uploadSkillFile(file, skill.id)
       }

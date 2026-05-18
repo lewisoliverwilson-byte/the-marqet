@@ -63,8 +63,8 @@ export default function DashboardPage() {
   if (!user) return <Navigate to="/auth/login" state={{ from: '/dashboard' }} />
 
   useEffect(() => {
-    getMySkills(user.id).then(s => { setSkills(s); setLoading(false) })
-  }, [user.id])
+    getMySkills(user.userId).then(s => { setSkills(s); setLoading(false) })
+  }, [user.userId])
 
   const stats = {
     total: skills.length,

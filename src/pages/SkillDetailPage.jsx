@@ -57,7 +57,7 @@ export default function SkillDetailPage() {
       setSkill(s)
       setLoading(false)
       if (user && s) {
-        const inst = await hasInstalled(s.id, user.id)
+        const inst = await hasInstalled(s.id, user.userId)
         setInstalled(inst)
       }
     }
@@ -74,7 +74,7 @@ export default function SkillDetailPage() {
     } else {
       window.open(skill.file_path, '_blank')
     }
-    await incrementInstall(skill.id, user?.id, skill.version)
+    await incrementInstall(skill.id, user?.userId, skill.version)
     setInstalled(true)
     setSkill(s => ({ ...s, install_count: (s.install_count || 0) + 1 }))
   }
@@ -84,7 +84,7 @@ export default function SkillDetailPage() {
     if (!installed) { toast.error('Install this add-on first to leave a review.'); return }
     if (!rating) { toast.error('Select a star rating.'); return }
     try {
-      await submitReview(skill.id, user.id, rating, reviewBody)
+      await submitReview(skill.id, user.userId, rating, reviewBody, profile)
       toast.success('Review submitted!')
       setReviewModal(false)
       const s = await getSkillBySlug(slug)
@@ -98,7 +98,7 @@ export default function SkillDetailPage() {
     if (!user) { toast.error('Sign in to report.'); return }
     if (!reportReason) { toast.error('Select a reason.'); return }
     try {
-      await submitReport(skill.id, user.id, reportReason, '')
+      await submitReport(skill.id, user.userId, reportReason, '')
       toast.success('Report submitted. We\'ll review it within 24 hours.')
       setReportModal(false)
     } catch (err) {

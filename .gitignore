@@ -26,3 +26,7 @@ dist-ssr
 *.sln
 *.sw?
 .gstack/
+
+# Amplify Gen 2 — generated during build/sandbox, not committed
+amplify_outputs.json
+.amplify/

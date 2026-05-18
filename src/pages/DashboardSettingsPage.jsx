@@ -27,12 +27,17 @@ export default function DashboardSettingsPage() {
   })
 
   useEffect(() => {
-    if (profile) reset({ display_name: profile.display_name || '', bio: profile.bio || '', website: profile.website || '', github_url: profile.github_url || '' })
+    if (profile) reset({
+      display_name: profile.displayName || profile.display_name || '',
+      bio: profile.bio || '',
+      website: profile.website || '',
+      github_url: profile.githubUrl || profile.github_url || '',
+    })
   }, [profile, reset])
 
   async function onSubmit(values) {
     try {
-      await updateProfile(user.id, values)
+      await updateProfile(user.userId, values)
       await refreshProfile()
       toast.success('Profile updated.')
     } catch (err) {

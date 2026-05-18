@@ -1,236 +1,353 @@
-import { supabase } from './supabase'
+import { isConfigured, client, authClient } from './amplify'
+import { uploadData, getUrl } from 'aws-amplify/storage'
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function withRating(skill) {
+  return {
+    ...skill,
+    avg_rating: skill.avgRating ?? null,
+    review_count: skill.reviewCount ?? 0,
+    // Shape to match existing UI expectations
+    profiles: skill.authorUsername ? {
+      username: skill.authorUsername,
+      display_name: skill.authorDisplayName,
+      avatar_url: skill.authorAvatarUrl,
+      is_verified: skill.authorIsVerified,
+    } : null,
+    price_gbp: skill.priceGbp ?? 0,
+    short_description: skill.shortDescription,
+    long_description: skill.longDescription,
+    install_count: skill.installCount ?? 0,
+    author_id: skill.authorCognitoId,
+    repo_url: skill.repoUrl,
+    admin_notes: skill.adminNotes,
+    file_path: skill.filePath,
+    skill_content: skill.skillContent,
+  }
+}
 
 // ─── Skills ──────────────────────────────────────────────────────────────────
 
-export async function getSkills({ category, search, sort = 'newest', free, minRating, page = 1, limit = 24 } = {}) {
-  if (!supabase) return { data: [], count: 0 }
-  let q = supabase
-    .from('skills')
-    .select(`
-      *,
-      profiles:author_id (username, display_name, avatar_url, is_verified),
-      reviews (rating)
-    `, { count: 'exact' })
-    .eq('status', 'approved')
+export async function getSkills({ category, search, sort = 'newest', free, page = 1, limit = 24 } = {}) {
+  if (!isConfigured) return { data: [], count: 0 }
+  try {
+    const { data: items, errors } = await client.models.Skill.listByStatus({ status: 'approved' })
+    if (errors?.length) throw new Error(errors[0].message)
 
-  if (category) q = q.eq('category', category)
-  if (free) q = q.eq('price_gbp', 0)
-  if (search) q = q.or(`title.ilike.%${search}%,short_description.ilike.%${search}%,tags.cs.{${search}}`)
+    let skills = (items || []).map(withRating)
 
-  const from = (page - 1) * limit
-  q = q.range(from, from + limit - 1)
+    if (category) skills = skills.filter(s => s.category === category)
+    if (free) skills = skills.filter(s => (s.price_gbp ?? 0) === 0)
+    if (search) {
+      const q = search.toLowerCase()
+      skills = skills.filter(s =>
+        s.title?.toLowerCase().includes(q) ||
+        s.short_description?.toLowerCase().includes(q) ||
+        s.tags?.some(t => t.toLowerCase().includes(q))
+      )
+    }
 
-  if (sort === 'newest') q = q.order('created_at', { ascending: false })
-  else if (sort === 'popular') q = q.order('install_count', { ascending: false })
-  else if (sort === 'rated') q = q.order('created_at', { ascending: false })
+    if (sort === 'popular') skills.sort((a, b) => (b.install_count || 0) - (a.install_count || 0))
+    else if (sort === 'rated') skills.sort((a, b) => (b.avg_rating || 0) - (a.avg_rating || 0))
+    else skills.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
-  const { data, error, count } = await q
-  if (error) throw error
-
-  const skills = (data || []).map(s => ({
-    ...s,
-    avg_rating: s.reviews?.length ? s.reviews.reduce((a, r) => a + r.rating, 0) / s.reviews.length : null,
-    review_count: s.reviews?.length ?? 0,
-  }))
-
-  if (minRating) return { data: skills.filter(s => s.avg_rating >= minRating), count }
-  return { data: skills, count }
+    const count = skills.length
+    const start = (page - 1) * limit
+    return { data: skills.slice(start, start + limit), count }
+  } catch (e) {
+    console.error('getSkills error:', e)
+    return { data: [], count: 0 }
+  }
 }
 
 export async function getSkillBySlug(slug) {
-  if (!supabase) return null
-  const { data, error } = await supabase
-    .from('skills')
-    .select(`
-      *,
-      profiles:author_id (id, username, display_name, avatar_url, is_verified, bio, github_url, website),
-      reviews (
-        id, created_at, rating, body, developer_response,
-        reviewer:reviewer_id (username, display_name, avatar_url)
-      )
-    `)
-    .eq('slug', slug)
-    .eq('status', 'approved')
-    .single()
-  if (error) return null
-  const avg_rating = data.reviews?.length ? data.reviews.reduce((a, r) => a + r.rating, 0) / data.reviews.length : null
-  return { ...data, avg_rating, review_count: data.reviews?.length ?? 0 }
+  if (!isConfigured) return null
+  try {
+    const { data: items } = await client.models.Skill.listBySlug({ slug })
+    const skill = (items || []).find(s => s.status === 'approved')
+    if (!skill) return null
+
+    const { data: reviews } = await client.models.Review.listBySkillId({ skillId: skill.id })
+
+    return {
+      ...withRating(skill),
+      reviews: (reviews || []).map(r => ({
+        ...r,
+        reviewer: {
+          username: r.reviewerUsername,
+          display_name: r.reviewerDisplayName,
+          avatar_url: r.reviewerAvatarUrl,
+        },
+        developer_response: r.developerResponse,
+      })),
+    }
+  } catch (e) {
+    console.error('getSkillBySlug error:', e)
+    return null
+  }
 }
 
 export async function getFeaturedSkills() {
-  if (!supabase) return []
-  const { data } = await supabase
-    .from('skills')
-    .select(`*, profiles:author_id (username, display_name, avatar_url, is_verified), reviews (rating)`)
-    .eq('status', 'approved')
-    .eq('featured', true)
-    .limit(6)
-  return (data || []).map(s => ({
-    ...s,
-    avg_rating: s.reviews?.length ? s.reviews.reduce((a, r) => a + r.rating, 0) / s.reviews.length : null,
-    review_count: s.reviews?.length ?? 0,
-  }))
+  if (!isConfigured) return []
+  try {
+    const { data: items } = await client.models.Skill.listByFeatured({ featured: true })
+    return (items || []).filter(s => s.status === 'approved').map(withRating)
+  } catch (e) {
+    return []
+  }
 }
 
 export async function incrementInstall(skillId, userId, version) {
-  if (!supabase) return
-  await supabase.rpc('increment_install', { skill_id: skillId })
-  if (userId) {
-    await supabase.from('installs').upsert({ skill_id: skillId, user_id: userId, version_installed: version })
+  if (!isConfigured) return
+  try {
+    // Increment denormalized counter (non-atomic; acceptable for v1)
+    const { data: skill } = await client.models.Skill.get({ id: skillId })
+    if (skill) {
+      await authClient.models.Skill.update({ id: skillId, installCount: (skill.installCount || 0) + 1 })
+    }
+    if (userId) {
+      await authClient.models.Install.create({ skillId, userId, versionInstalled: version })
+        .catch(() => {}) // ignore duplicate install
+    }
+  } catch (e) {
+    console.error('incrementInstall error:', e)
   }
 }
 
 export async function hasInstalled(skillId, userId) {
-  if (!supabase || !userId) return false
-  const { data } = await supabase.from('installs').select('id').eq('skill_id', skillId).eq('user_id', userId).maybeSingle()
-  return !!data
+  if (!isConfigured || !userId) return false
+  try {
+    const { data: installs } = await authClient.models.Install.listInstallsByUserId({ userId })
+    return (installs || []).some(i => i.skillId === skillId)
+  } catch {
+    return false
+  }
 }
 
 // ─── Reviews ─────────────────────────────────────────────────────────────────
 
-export async function submitReview(skillId, reviewerId, rating, body) {
-  if (!supabase) throw new Error('Unavailable')
-  const { error } = await supabase.from('reviews').upsert({ skill_id: skillId, reviewer_id: reviewerId, rating, body })
-  if (error) throw error
+export async function submitReview(skillId, reviewerCognitoId, rating, body, reviewerProfile) {
+  if (!isConfigured) throw new Error('Unavailable')
+
+  // Check for existing review from this user
+  const { data: existing } = await authClient.models.Review.listByReviewerCognitoId({ reviewerCognitoId })
+  const prior = (existing || []).find(r => r.skillId === skillId)
+
+  if (prior) {
+    await authClient.models.Review.update({ id: prior.id, rating, body })
+  } else {
+    await authClient.models.Review.create({
+      skillId,
+      reviewerCognitoId,
+      reviewerUsername: reviewerProfile?.username,
+      reviewerDisplayName: reviewerProfile?.display_name || reviewerProfile?.displayName,
+      reviewerAvatarUrl: reviewerProfile?.avatar_url || reviewerProfile?.avatarUrl,
+      rating,
+      body,
+    })
+  }
+
+  // Update denormalized avgRating on the skill
+  const { data: allReviews } = await client.models.Review.listBySkillId({ skillId })
+  const reviews = allReviews || []
+  const avgRating = reviews.length ? reviews.reduce((a, r) => a + r.rating, 0) / reviews.length : null
+  await authClient.models.Skill.update({ id: skillId, avgRating, reviewCount: reviews.length })
 }
 
-export async function submitDeveloperResponse(reviewId, response) {
-  if (!supabase) throw new Error('Unavailable')
-  const { error } = await supabase.from('reviews').update({ developer_response: response }).eq('id', reviewId)
-  if (error) throw error
+export async function submitDeveloperResponse(reviewId, developerResponse) {
+  if (!isConfigured) throw new Error('Unavailable')
+  await authClient.models.Review.update({ id: reviewId, developerResponse })
 }
 
 // ─── Submissions ─────────────────────────────────────────────────────────────
 
-export async function submitSkill(payload) {
-  if (!supabase) throw new Error('Unavailable')
+export async function submitSkill(payload, authorProfile) {
+  if (!isConfigured) throw new Error('Unavailable')
   const slug = payload.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-  const { data, error } = await supabase.from('skills').insert({ ...payload, slug, status: 'pending' }).select().single()
-  if (error) throw error
+
+  const { data, errors } = await authClient.models.Skill.create({
+    title: payload.title,
+    slug,
+    shortDescription: payload.short_description || payload.shortDescription,
+    longDescription: payload.long_description || payload.longDescription,
+    category: payload.category,
+    tags: payload.tags || [],
+    priceGbp: payload.price_gbp ?? payload.priceGbp ?? 0,
+    repoUrl: payload.repo_url || payload.repoUrl,
+    version: payload.version || '1.0.0',
+    changelog: payload.changelog,
+    compatibility: payload.compatibility || ['claude'],
+    authorCognitoId: authorProfile.cognitoId,
+    authorUsername: authorProfile.username,
+    authorDisplayName: authorProfile.displayName || authorProfile.display_name,
+    authorAvatarUrl: authorProfile.avatarUrl || authorProfile.avatar_url,
+    authorIsVerified: authorProfile.isVerified || authorProfile.is_verified || false,
+    license: payload.license || 'MIT',
+    status: 'pending',
+  })
+
+  if (errors?.length) throw new Error(errors[0].message)
   return data
 }
 
 export async function uploadSkillFile(file, skillId) {
-  if (!supabase) throw new Error('Unavailable')
+  if (!isConfigured) throw new Error('Unavailable')
   const ext = file.name.split('.').pop()
-  const path = `skills/${skillId}/skill.${ext}`
-  const { error } = await supabase.storage.from('skill-files').upload(path, file, { upsert: true })
-  if (error) throw error
-  const { data } = supabase.storage.from('skill-files').getPublicUrl(path)
-  await supabase.from('skills').update({ file_path: data.publicUrl }).eq('id', skillId)
-  return data.publicUrl
+  const path = `skill-files/${skillId}/skill.${ext}`
+
+  await uploadData({ path, data: file }).result
+
+  const { url } = await getUrl({ path })
+  const fileUrl = url.toString().split('?')[0] // strip presign params
+
+  await authClient.models.Skill.update({ id: skillId, filePath: fileUrl })
+  return fileUrl
 }
 
 export async function getMySkills(userId) {
-  if (!supabase) return []
-  const { data } = await supabase
-    .from('skills')
-    .select(`*, reviews (rating)`)
-    .eq('author_id', userId)
-    .order('created_at', { ascending: false })
-  return (data || []).map(s => ({
-    ...s,
-    avg_rating: s.reviews?.length ? s.reviews.reduce((a, r) => a + r.rating, 0) / s.reviews.length : null,
-    review_count: s.reviews?.length ?? 0,
-  }))
+  if (!isConfigured) return []
+  try {
+    const { data: items } = await authClient.models.Skill.listByAuthorCognitoId({ authorCognitoId: userId })
+    return (items || []).map(withRating).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  } catch {
+    return []
+  }
 }
 
 // ─── Admin ───────────────────────────────────────────────────────────────────
 
 export async function getPendingSkills() {
-  if (!supabase) return []
-  const { data } = await supabase
-    .from('skills')
-    .select(`*, profiles:author_id (username, display_name, is_verified)`)
-    .eq('status', 'pending')
-    .order('created_at', { ascending: true })
-  return data || []
+  if (!isConfigured) return []
+  try {
+    const { data: items } = await authClient.models.Skill.listByStatus({ status: 'pending' })
+    return (items || []).map(withRating).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+  } catch {
+    return []
+  }
 }
 
 export async function reviewSkill(skillId, status, adminNotes) {
-  if (!supabase) throw new Error('Unavailable')
-  const { error } = await supabase.from('skills').update({ status, admin_notes: adminNotes }).eq('id', skillId)
-  if (error) throw error
+  if (!isConfigured) throw new Error('Unavailable')
+  const { errors } = await authClient.models.Skill.update({ id: skillId, status, adminNotes })
+  if (errors?.length) throw new Error(errors[0].message)
 }
 
 export async function getAdminStats() {
-  if (!supabase) return {}
-  const [skills, pending, users, installs] = await Promise.all([
-    supabase.from('skills').select('id', { count: 'exact' }).eq('status', 'approved'),
-    supabase.from('skills').select('id', { count: 'exact' }).eq('status', 'pending'),
-    supabase.from('profiles').select('id', { count: 'exact' }),
-    supabase.from('installs').select('id', { count: 'exact' }),
-  ])
-  return {
-    totalSkills: skills.count ?? 0,
-    pendingReview: pending.count ?? 0,
-    totalUsers: users.count ?? 0,
-    totalInstalls: installs.count ?? 0,
+  if (!isConfigured) return {}
+  try {
+    const [approved, pending, allInstalls] = await Promise.all([
+      client.models.Skill.listByStatus({ status: 'approved' }),
+      client.models.Skill.listByStatus({ status: 'pending' }),
+      // Total installs = sum of installCount across all approved skills
+      client.models.Skill.listByStatus({ status: 'approved' }),
+    ])
+    const totalInstalls = (approved.data || []).reduce((a, s) => a + (s.installCount || 0), 0)
+    return {
+      totalSkills: (approved.data || []).length,
+      pendingReview: (pending.data || []).length,
+      totalUsers: 0, // Cognito user count requires Admin SDK
+      totalInstalls,
+    }
+  } catch {
+    return {}
   }
 }
 
 export async function getReports() {
-  if (!supabase) return []
-  const { data } = await supabase
-    .from('reports')
-    .select(`*, skills (title, slug), reporter:reporter_id (username)`)
-    .order('created_at', { ascending: false })
-  return data || []
+  if (!isConfigured) return []
+  try {
+    const { data } = await authClient.models.Report.list()
+    return (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  } catch {
+    return []
+  }
 }
 
 // ─── Profiles ────────────────────────────────────────────────────────────────
 
-export async function getProfile(userId) {
-  if (!supabase) return null
-  const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
-  return data
+export async function getProfile(cognitoId) {
+  if (!isConfigured || !cognitoId) return null
+  try {
+    const { data: items } = await client.models.Profile.listByCognitoId({ cognitoId })
+    return items?.[0] ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function getProfileByUsername(username) {
-  if (!supabase) return null
-  const { data } = await supabase
-    .from('profiles')
-    .select(`*, skills:skills!author_id (
-      id, title, slug, short_description, category, price_gbp, install_count, status, featured,
-      reviews (rating)
-    )`)
-    .eq('username', username)
-    .maybeSingle()
-  if (!data) return null
-  const skills = (data.skills || [])
-    .filter(s => s.status === 'approved')
-    .map(s => ({
-      ...s,
-      avg_rating: s.reviews?.length ? s.reviews.reduce((a, r) => a + r.rating, 0) / s.reviews.length : null,
-      review_count: s.reviews?.length ?? 0,
-    }))
-  return { ...data, skills }
+  if (!isConfigured) return null
+  try {
+    const { data: profiles } = await client.models.Profile.listByUsername({ username })
+    const profile = profiles?.[0]
+    if (!profile) return null
+
+    const { data: skills } = await client.models.Skill.listByAuthorCognitoId({ authorCognitoId: profile.cognitoId })
+    const approvedSkills = (skills || [])
+      .filter(s => s.status === 'approved')
+      .map(withRating)
+
+    return {
+      ...profile,
+      display_name: profile.displayName,
+      avatar_url: profile.avatarUrl,
+      github_url: profile.githubUrl,
+      is_verified: profile.isVerified,
+      is_admin: profile.isAdmin,
+      skills: approvedSkills,
+    }
+  } catch (e) {
+    console.error('getProfileByUsername error:', e)
+    return null
+  }
 }
 
-export async function updateProfile(userId, updates) {
-  if (!supabase) throw new Error('Unavailable')
-  const { error } = await supabase.from('profiles').update(updates).eq('id', userId)
-  if (error) throw error
+export async function updateProfile(cognitoId, updates) {
+  if (!isConfigured) throw new Error('Unavailable')
+  const existing = await getProfile(cognitoId)
+  if (!existing) throw new Error('Profile not found')
+
+  const { errors } = await authClient.models.Profile.update({
+    id: existing.id,
+    displayName: updates.display_name ?? updates.displayName,
+    bio: updates.bio,
+    website: updates.website,
+    githubUrl: updates.github_url ?? updates.githubUrl,
+    avatarUrl: updates.avatar_url ?? updates.avatarUrl,
+  })
+  if (errors?.length) throw new Error(errors[0].message)
 }
 
 // ─── Contact ─────────────────────────────────────────────────────────────────
 
 export async function submitContactRequest(payload) {
-  if (!supabase) throw new Error('Unavailable')
-  const { error } = await supabase.from('contact_requests').insert(payload)
-  if (error) throw error
+  if (!isConfigured) throw new Error('Unavailable')
+  const { errors } = await client.models.ContactRequest.create({
+    name: payload.name,
+    email: payload.email,
+    company: payload.company,
+    requestType: payload.request_type || payload.requestType || 'custom_build',
+    description: payload.description,
+    budgetRange: payload.budget_range || payload.budgetRange,
+  })
+  if (errors?.length) throw new Error(errors[0].message)
 }
 
 export async function getContactRequests() {
-  if (!supabase) return []
-  const { data } = await supabase.from('contact_requests').select('*').order('created_at', { ascending: false })
-  return data || []
+  if (!isConfigured) return []
+  try {
+    const { data } = await authClient.models.ContactRequest.list()
+    return (data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  } catch {
+    return []
+  }
 }
 
 // ─── Reports ─────────────────────────────────────────────────────────────────
 
-export async function submitReport(skillId, reporterId, reason, details) {
-  if (!supabase) throw new Error('Unavailable')
-  const { error } = await supabase.from('reports').insert({ skill_id: skillId, reporter_id: reporterId, reason, details })
-  if (error) throw error
+export async function submitReport(skillId, reporterCognitoId, reason, details) {
+  if (!isConfigured) throw new Error('Unavailable')
+  const { errors } = await client.models.Report.create({ skillId, reporterCognitoId, reason, details })
+  if (errors?.length) throw new Error(errors[0].message)
 }

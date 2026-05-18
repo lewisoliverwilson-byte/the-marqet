@@ -1,99 +1,153 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { Hub } from 'aws-amplify/utils'
+import {
+  signUp as amplifySignUp,
+  signIn as amplifySignIn,
+  signOut as amplifySignOut,
+  confirmSignUp,
+  resetPassword,
+  confirmResetPassword,
+  updatePassword,
+  fetchUserAttributes,
+  getCurrentUser,
+} from 'aws-amplify/auth'
+import { isConfigured, authClient } from '../lib/amplify'
 import { getProfile } from '../lib/api'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null)   // { userId, username } from getCurrentUser
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  async function loadProfile(u) {
-    if (!u) { setProfile(null); return }
-    const p = await getProfile(u.id)
+  async function loadProfile(cognitoId) {
+    if (!cognitoId) { setProfile(null); return }
+    const p = await getProfile(cognitoId)
     setProfile(p)
   }
 
+  async function fetchCurrentUser() {
+    if (!isConfigured) { setLoading(false); return }
+    try {
+      const u = await getCurrentUser()
+      setUser(u)
+      await loadProfile(u.userId)
+    } catch {
+      setUser(null)
+      setProfile(null)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    if (!supabase) { setLoading(false); return }
+    fetchCurrentUser()
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      loadProfile(session?.user ?? null).finally(() => setLoading(false))
+    const { remove } = Hub.listen('auth', ({ payload }) => {
+      switch (payload.event) {
+        case 'signedIn':
+          fetchCurrentUser()
+          break
+        case 'signedOut':
+          setUser(null)
+          setProfile(null)
+          break
+        case 'tokenRefresh_failure':
+          setUser(null)
+          setProfile(null)
+          break
+      }
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      loadProfile(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
+    return remove
   }, [])
 
   async function signUp(email, password, username, displayName) {
-    if (!supabase) throw new Error('Auth unavailable')
-    const { data, error } = await supabase.auth.signUp({
-      email,
+    if (!isConfigured) throw new Error('Auth unavailable')
+
+    const { isSignUpComplete, userId, nextStep } = await amplifySignUp({
+      username: email,
       password,
-      options: { data: { username, display_name: displayName } },
+      options: {
+        userAttributes: {
+          preferred_username: username,
+          name: displayName,
+        },
+      },
     })
-    if (error) throw error
-    if (data.user) {
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
-        username,
-        display_name: displayName,
-      })
-    }
-    return data
+
+    // Profile is created in AuthCallbackPage after email confirmation,
+    // or lazily on first sign-in via ensureProfile().
+    return { isSignUpComplete, userId, nextStep }
+  }
+
+  async function confirmEmail(email, code) {
+    if (!isConfigured) throw new Error('Auth unavailable')
+    await confirmSignUp({ username: email, confirmationCode: code })
   }
 
   async function signIn(email, password) {
-    if (!supabase) throw new Error('Auth unavailable')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
+    if (!isConfigured) throw new Error('Auth unavailable')
+    const result = await amplifySignIn({ username: email, password })
+    return result
   }
 
   async function signInWithGitHub() {
-    if (!supabase) throw new Error('Auth unavailable')
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    })
-    if (error) throw error
+    // GitHub OAuth requires the externalProviders block in amplify/auth/resource.ts
+    // to be uncommented and the GitHub OAuth App to be configured.
+    // See comments in amplify/auth/resource.ts for setup instructions.
+    throw new Error('GitHub sign-in requires additional setup. See amplify/auth/resource.ts.')
   }
 
   async function signOut() {
-    if (!supabase) return
-    await supabase.auth.signOut()
+    if (!isConfigured) return
+    await amplifySignOut()
   }
 
-  async function resetPassword(email) {
-    if (!supabase) throw new Error('Auth unavailable')
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+  async function forgotPassword(email) {
+    if (!isConfigured) throw new Error('Auth unavailable')
+    await resetPassword({ username: email })
+  }
+
+  async function confirmPasswordReset(email, code, newPassword) {
+    if (!isConfigured) throw new Error('Auth unavailable')
+    await confirmResetPassword({ username: email, confirmationCode: code, newPassword })
+  }
+
+  async function changePassword(oldPassword, newPassword) {
+    if (!isConfigured) throw new Error('Auth unavailable')
+    await updatePassword({ oldPassword, newPassword })
+  }
+
+  // Creates the DynamoDB profile after the user's first sign-in if it doesn't exist yet.
+  async function ensureProfile(cognitoUser, attributes) {
+    if (!isConfigured || !cognitoUser) return
+    const existing = await getProfile(cognitoUser.userId)
+    if (existing) return existing
+
+    const username = attributes?.preferred_username || cognitoUser.username?.split('@')[0] || 'user'
+    const { data } = await authClient.models.Profile.create({
+      cognitoId: cognitoUser.userId,
+      username,
+      displayName: attributes?.name || username,
+      avatarUrl: attributes?.picture,
     })
-    if (error) throw error
-  }
-
-  async function updatePassword(newPassword) {
-    if (!supabase) throw new Error('Auth unavailable')
-    const { error } = await supabase.auth.updateUser({ password: newPassword })
-    if (error) throw error
+    return data
   }
 
   async function refreshProfile() {
-    if (user) await loadProfile(user)
+    if (user) await loadProfile(user.userId)
   }
 
-  const isAdmin = profile?.is_admin ?? false
+  const isAdmin = profile?.isAdmin ?? false
 
   return (
     <AuthContext.Provider value={{
       user, profile, loading, isAdmin,
-      signUp, signIn, signInWithGitHub, signOut,
-      resetPassword, updatePassword, refreshProfile,
+      signUp, confirmEmail, signIn, signInWithGitHub,
+      signOut, forgotPassword, confirmPasswordReset, changePassword,
+      refreshProfile, ensureProfile,
     }}>
       {children}
     </AuthContext.Provider>

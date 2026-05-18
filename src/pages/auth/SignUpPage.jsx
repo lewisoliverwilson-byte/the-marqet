@@ -36,9 +36,10 @@ export default function SignUpPage() {
   async function onSubmit(values) {
     try {
       await signUp(values.email, values.password, values.username, values.displayName)
-      navigate('/auth/verify-email')
+      // Pass email + password so VerifyEmailPage can auto sign-in after confirmation
+      navigate(`/auth/verify-email?email=${encodeURIComponent(values.email)}&password=${encodeURIComponent(values.password)}`)
     } catch (err) {
-      if (err.message?.includes('already registered')) {
+      if (err.message?.includes('already registered') || err.message?.includes('UsernameExistsException')) {
         toast.error('An account with this email already exists.')
       } else {
         toast.error(err.message || 'Sign-up failed — please try again.')

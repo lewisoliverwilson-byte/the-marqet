@@ -1,25 +1,29 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../../lib/supabase'
+import { fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth'
+import { useAuth } from '../../context/AuthContext'
+import { isConfigured } from '../../lib/amplify'
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate()
+  const { ensureProfile } = useAuth()
 
   useEffect(() => {
-    if (!supabase) { navigate('/'); return }
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        supabase.from('profiles').upsert({
-          id: session.user.id,
-          username: session.user.user_metadata?.user_name || session.user.email?.split('@')[0],
-          display_name: session.user.user_metadata?.full_name || session.user.user_metadata?.user_name,
-          avatar_url: session.user.user_metadata?.avatar_url,
-          github_url: session.user.user_metadata?.user_name ? `https://github.com/${session.user.user_metadata.user_name}` : null,
-        }, { ignoreDuplicates: true })
+    if (!isConfigured) { navigate('/'); return }
+
+    async function handleCallback() {
+      try {
+        const cognitoUser = await getCurrentUser()
+        const attributes = await fetchUserAttributes()
+        await ensureProfile(cognitoUser, attributes)
+        navigate('/')
+      } catch {
+        navigate('/auth/login')
       }
-      navigate('/')
-    })
-  }, [navigate])
+    }
+
+    handleCallback()
+  }, [navigate, ensureProfile])
 
   return (
     <div className="min-h-screen flex items-center justify-center">

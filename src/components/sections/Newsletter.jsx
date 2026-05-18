@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Loader2 } from 'lucide-react'
 import QMark from '../brand/QMark'
 import Button from '../ui/Button'
-import { supabase } from '../../lib/supabase'
+import { client, isConfigured } from '../../lib/amplify'
 import { consumeIntent, INTENT_EVENT } from '../../lib/waitlistIntent'
 
 const STATUS = {
@@ -35,7 +35,7 @@ export default function Newsletter() {
     e.preventDefault()
     if (status === 'loading' || status === 'success') return
 
-    if (!supabase) {
+    if (!isConfigured) {
       setStatus('unavailable')
       return
     }
@@ -43,10 +43,11 @@ export default function Newsletter() {
     setStatus('loading')
 
     try {
-      const { error } = await supabase.from('waitlist').insert({ email: email.trim(), role })
+      const { errors } = await client.models.Waitlist.create({ email: email.trim(), role })
 
-      if (error) {
-        if (error.code === '23505') {
+      if (errors?.length) {
+        // Duplicate email = identifier conflict
+        if (errors[0].message?.includes('ConditionalCheckFailedException') || errors[0].errorType === 'ConflictException') {
           setStatus('duplicate')
         } else {
           setStatus('error')
@@ -56,8 +57,12 @@ export default function Newsletter() {
 
       setStatus('success')
       setEmail('')
-    } catch {
-      setStatus('error')
+    } catch (err) {
+      if (err?.message?.includes('already exists') || err?.message?.includes('ConditionalCheck')) {
+        setStatus('duplicate')
+      } else {
+        setStatus('error')
+      }
     }
   }
 

@@ -35,10 +35,18 @@ export default function LoginPage() {
 
   async function onSubmit(values) {
     try {
-      await signIn(values.email, values.password)
+      const result = await signIn(values.email, values.password)
+      if (result?.nextStep?.signInStep === 'CONFIRM_SIGN_UP') {
+        navigate(`/auth/verify-email?email=${encodeURIComponent(values.email)}&password=${encodeURIComponent(values.password)}`)
+        return
+      }
       navigate(from, { replace: true })
     } catch (err) {
-      toast.error(err.message || 'Login failed — check your credentials.')
+      if (err.message?.includes('UserNotConfirmedException')) {
+        navigate(`/auth/verify-email?email=${encodeURIComponent(values.email)}&password=${encodeURIComponent(values.password)}`)
+      } else {
+        toast.error(err.message || 'Login failed — check your credentials.')
+      }
     }
   }
 
