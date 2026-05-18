@@ -60,7 +60,6 @@ const schema = a.schema({
     index('slug').queryField('listBySlug'),
     index('status').queryField('listByStatus'),
     index('authorCognitoId').queryField('listByAuthorCognitoId'),
-    index('featured').queryField('listByFeatured'),
   ])
   .authorization((allow) => [
     allow.publicApiKey().to(['read']),

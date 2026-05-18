@@ -91,8 +91,8 @@ export async function getSkillBySlug(slug) {
 export async function getFeaturedSkills() {
   if (!isConfigured) return []
   try {
-    const { data: items } = await client.models.Skill.listByFeatured({ featured: true })
-    return (items || []).filter(s => s.status === 'approved').map(withRating)
+    const { data: items } = await client.models.Skill.listByStatus({ status: 'approved' })
+    return (items || []).filter(s => s.featured).map(withRating)
   } catch (e) {
     return []
   }
