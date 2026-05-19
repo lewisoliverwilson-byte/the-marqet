@@ -44,9 +44,23 @@ export default function Navbar() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${transparent ? 'bg-transparent' : 'bg-white/85 backdrop-blur-xl border-b border-border/70 shadow-[0_1px_12px_rgba(0,0,0,0.04)]'}`}>
       <nav className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
-        <Link to="/" onClick={() => setMenuOpen(false)}>
-          <Logo size="sm" />
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link to="/" onClick={() => setMenuOpen(false)}>
+            <Logo size="sm" />
+          </Link>
+          <div className="hidden sm:flex items-center gap-2.5">
+            <div className="h-4 w-px bg-border" />
+            <span style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              color: '#AAAAB8',
+              letterSpacing: '0.02em',
+              whiteSpace: 'nowrap',
+            }}>
+              by ConstruX
+            </span>
+          </div>
+        </div>
 
         {/* Desktop nav */}
         <ul className="hidden lg:flex items-center gap-8 list-none m-0 p-0">
