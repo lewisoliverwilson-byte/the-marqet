@@ -319,8 +319,8 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Marquee — slightly below viewport edge for a peek effect */}
-      <div className="absolute left-0 right-0 bg-primary py-4 overflow-hidden z-10" style={{ bottom: '-22px' }} aria-hidden="true">
+      {/* Marquee — flush with viewport bottom */}
+      <div className="absolute bottom-0 left-0 right-0 bg-primary py-4 overflow-hidden z-10" aria-hidden="true">
         <div className="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-primary to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-primary to-transparent" />
         <div className="flex w-max animate-marquee">
