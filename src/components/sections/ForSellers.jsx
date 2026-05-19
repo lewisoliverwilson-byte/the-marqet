@@ -23,30 +23,26 @@ export default function ForSellers() {
 
   return (
     <section id="sellers" className="relative bg-primary py-24 md:py-32 overflow-hidden">
-      {/* Dot grid pattern */}
+      {/* Subtle dot grid */}
       <div
         className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
         style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
         }}
-        aria-hidden="true"
       />
-      {/* Ambient glow */}
+      {/* Ambient corner glows */}
       <div
-        className="pointer-events-none absolute top-0 right-0 w-[700px] h-[500px] rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(ellipse at top right, rgba(59,130,246,0.08), transparent 70%)' }}
+        className="pointer-events-none absolute -top-40 right-0 w-[600px] h-[600px] rounded-full"
         aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 left-0 w-[500px] h-[400px] rounded-full blur-3xl"
-        style={{ background: 'radial-gradient(ellipse at bottom left, rgba(99,102,241,0.06), transparent 70%)' }}
-        aria-hidden="true"
+        style={{
+          background: 'radial-gradient(circle at top right, rgba(59,130,246,0.07), transparent 65%)',
+        }}
       />
 
       <div className="relative mx-auto max-w-6xl px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          {/* Left column */}
           <RevealOnScroll>
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-widest3 text-dark-mid mb-5">
@@ -77,8 +73,7 @@ export default function ForSellers() {
             </div>
           </RevealOnScroll>
 
-          {/* Right column — benefits */}
-          <RevealOnScroll delay={150}>
+          <RevealOnScroll delay={120}>
             <ul className="flex flex-col gap-4 list-none m-0 p-0">
               {benefits.map((benefit, i) => (
                 <li key={i} className="flex items-start gap-3">

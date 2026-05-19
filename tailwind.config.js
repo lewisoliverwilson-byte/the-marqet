@@ -13,7 +13,6 @@ export default {
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
-        display: ['"Instrument Serif"', 'Georgia', 'serif'],
       },
       letterSpacing: {
         widest2: '0.20em',
@@ -21,17 +20,11 @@ export default {
       },
       animation: {
         marquee: 'marquee 40s linear infinite',
-        float: 'float 4s ease-in-out infinite',
-        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         marquee: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
         },
       },
     },

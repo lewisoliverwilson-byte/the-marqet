@@ -1,16 +1,16 @@
 const variants = {
   primary:
-    'bg-gradient-to-b from-blue-500 to-blue-600 text-white shadow-[0_1px_2px_rgba(0,0,0,0.12),0_0_0_1px_rgba(59,130,246,0.15)] hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_0_24px_rgba(59,130,246,0.4),0_1px_2px_rgba(0,0,0,0.1)] active:scale-[0.97]',
+    'bg-accent text-white hover:bg-blue-600 shadow-[0_1px_2px_rgba(0,0,0,0.12)] hover:shadow-[0_4px_16px_rgba(59,130,246,0.38)] active:scale-[0.97]',
   secondary:
-    'bg-primary text-white hover:bg-gray-800 active:scale-[0.97]',
+    'bg-primary text-white hover:bg-gray-800 shadow-sm hover:shadow-md active:scale-[0.97]',
   outline:
     'bg-white text-primary border border-border shadow-sm hover:border-accent hover:text-accent hover:shadow-md active:scale-[0.97]',
   ghost:
-    'bg-transparent text-primary hover:text-accent active:scale-[0.97]',
+    'bg-transparent text-dark-mid hover:text-accent active:scale-[0.97]',
   'outline-white':
     'bg-transparent text-white border border-white/20 hover:bg-white/10 active:scale-[0.97]',
   white:
-    'bg-white text-primary shadow-sm hover:bg-accent hover:text-white hover:shadow-[0_0_24px_rgba(59,130,246,0.35)] active:scale-[0.97]',
+    'bg-white text-primary shadow-sm hover:bg-accent hover:text-white hover:shadow-[0_4px_16px_rgba(59,130,246,0.38)] active:scale-[0.97]',
 }
 
 const sizeClasses = {

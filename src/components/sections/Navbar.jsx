@@ -42,7 +42,7 @@ export default function Navbar() {
   const transparent = isHome && !scrolled && !menuOpen
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${transparent ? 'bg-transparent' : 'bg-white/80 backdrop-blur-xl border-b border-border/60 shadow-[0_1px_0_rgba(0,0,0,0.04)]'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${transparent ? 'bg-transparent' : 'bg-white/85 backdrop-blur-xl border-b border-border/70 shadow-[0_1px_12px_rgba(0,0,0,0.04)]'}`}>
       <nav className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
         <Link to="/" onClick={() => setMenuOpen(false)}>
           <Logo size="sm" />

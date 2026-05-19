@@ -7,9 +7,9 @@ export default function CategoryCard({ category }) {
   const Icon = iconMap[icon] ?? Cpu
 
   return (
-    <article className="group flex items-start gap-4 rounded-2xl border border-border bg-white p-5 transition-all duration-300 hover:border-accent/40 hover:shadow-[0_8px_32px_rgba(59,130,246,0.13)] hover:-translate-y-1 cursor-pointer">
+    <article className="group flex items-start gap-4 rounded-2xl border border-border bg-white p-5 transition-all duration-250 hover:border-primary/15 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_12px_32px_rgba(0,0,0,0.09)] hover:-translate-y-0.5 cursor-pointer">
       <div
-        className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
+        className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl"
         style={{ backgroundColor: `${color}15` }}
       >
         <Icon size={22} strokeWidth={1.75} style={{ color }} aria-hidden="true" />
@@ -20,7 +20,7 @@ export default function CategoryCard({ category }) {
           <h3 className="text-[18px] font-bold text-primary leading-snug">{name}</h3>
           <ArrowRight
             size={16}
-            className="text-muted flex-shrink-0 transition-all duration-200 group-hover:translate-x-1 group-hover:text-accent"
+            className="text-muted flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
             aria-hidden="true"
           />
         </div>
