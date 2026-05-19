@@ -1,9 +1,10 @@
 import QMark from './QMark'
 
 const sizes = {
-  sm: { mark: 24, the: 9, wordmark: 18 },
-  md: { mark: 32, the: 10, wordmark: 24 },
-  lg: { mark: 44, the: 11, wordmark: 32 },
+  sm:     { mark: 24, the: 9,  wordmark: 18 },
+  md:     { mark: 32, the: 10, wordmark: 24 },
+  lg:     { mark: 44, the: 11, wordmark: 32 },
+  splash: { mark: 156, the: 24, wordmark: 112 },
 }
 
 export default function Logo({ size = 'sm', reversed = false, className = '' }) {
