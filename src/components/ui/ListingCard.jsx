@@ -1,7 +1,7 @@
+import { useRef, useCallback } from 'react'
 import { Star, ArrowUpRight, Zap, Server, MessageSquare, GitBranch, Package, Layout } from 'lucide-react'
 import Badge from './Badge'
 
-// Shared visual config — same gradient + icon language as the hero background cards
 const CARD_CONFIG = {
   claude_skill:    { Icon: Zap,           gradient: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)' },
   'Claude Skills': { Icon: Zap,           gradient: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)' },
@@ -49,9 +49,60 @@ function Avatar({ name }) {
 
 export default function ListingCard({ listing }) {
   const { category, title, description, creator, price, rating, reviews } = listing
+  const cardRef = useRef(null)
+  const shineRef = useRef(null)
+
+  const handleMouseMove = useCallback((e) => {
+    const card = cardRef.current
+    const shine = shineRef.current
+    if (!card || !shine) return
+
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const cx = rect.width / 2
+    const cy = rect.height / 2
+
+    const rotateX = ((y - cy) / cy) * -6
+    const rotateY = ((x - cx) / cx) * 6
+
+    card.style.transition = 'box-shadow 0.2s ease, border-color 0.2s ease'
+    card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(6px)`
+
+    const shineX = (x / rect.width) * 100
+    const shineY = (y / rect.height) * 100
+    shine.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.18) 0%, transparent 65%)`
+    shine.style.opacity = '1'
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    const card = cardRef.current
+    const shine = shineRef.current
+    if (!card || !shine) return
+    card.style.transition = 'transform 0.55s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease, border-color 0.2s ease'
+    card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px)'
+    shine.style.opacity = '0'
+  }, [])
 
   return (
-    <article className="group flex flex-col rounded-2xl border border-border bg-white p-5 transition-all duration-200 cursor-pointer hover:border-primary/15 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_12px_32px_rgba(0,0,0,0.09)] hover:-translate-y-0.5">
+    <article
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="group relative flex flex-col rounded-2xl border border-border bg-white p-5 cursor-pointer hover:border-primary/15 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_12px_32px_rgba(0,0,0,0.09)]"
+      style={{
+        transformStyle: 'preserve-3d',
+        willChange: 'transform',
+      }}
+    >
+      {/* Holographic shine overlay */}
+      <div
+        ref={shineRef}
+        className="pointer-events-none absolute inset-0 rounded-2xl transition-opacity duration-300"
+        style={{ opacity: 0 }}
+        aria-hidden="true"
+      />
+
       <CardHeader category={category} />
 
       <div className="flex items-start justify-between gap-2 mb-3">
