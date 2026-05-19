@@ -1,76 +1,71 @@
-import { Star } from 'lucide-react'
+import { Star, Zap, Server, MessageSquare, GitBranch, Package, Layout } from 'lucide-react'
 import Button from '../ui/Button'
 
 const BASE_ITEMS = [
   'WORKFLOWS', 'TEMPLATES', 'BUNDLES', 'AGENTS',
   'INTEGRATIONS', 'CLAUDE SKILLS', 'MCP SERVERS', 'PROMPT PACKS',
 ]
-const marqueeItems = [...BASE_ITEMS, ...BASE_ITEMS, ...BASE_ITEMS, ...BASE_ITEMS]
 
-// ─── background card data ───────────────────────────────────────────────────
-const COL_A = [
-  { title: 'Web Research Agent',  type: 'Claude Skill', price: '$29',  color: '#3B82F6' },
-  { title: 'Email Drafter',       type: 'Prompt Pack',  price: '$12',  color: '#14B8A6' },
-  { title: 'GitHub MCP',          type: 'MCP Server',   price: '$39',  color: '#8B5CF6' },
-  { title: 'Code Reviewer',       type: 'Claude Skill', price: 'Free', color: '#3B82F6' },
-  { title: 'SEO Pack Pro',        type: 'Prompt Pack',  price: '$19',  color: '#14B8A6' },
-  { title: 'Jira Connector',      type: 'MCP Server',   price: '$25',  color: '#8B5CF6' },
-  { title: 'Meeting Notes',       type: 'Workflow',     price: 'Free', color: '#10B981' },
-  { title: 'API Builder',         type: 'MCP Server',   price: '$15',  color: '#8B5CF6' },
-  { title: 'Doc Generator',       type: 'Claude Skill', price: '$18',  color: '#3B82F6' },
-  { title: 'Blog Writer',         type: 'Prompt Pack',  price: '$9',   color: '#14B8A6' },
-]
-const COL_B = [
-  { title: 'Data Analysis Kit',   type: 'Bundle',       price: '$49',  color: '#F59E0B' },
-  { title: 'Legal Drafter',       type: 'Prompt Pack',  price: '$22',  color: '#14B8A6' },
-  { title: 'Slack Integration',   type: 'MCP Server',   price: '$19',  color: '#8B5CF6' },
-  { title: 'Content Planner',     type: 'Workflow',     price: '$9',   color: '#10B981' },
-  { title: 'Bug Finder Pro',      type: 'Claude Skill', price: '$35',  color: '#3B82F6' },
-  { title: 'Sales Copy Pack',     type: 'Prompt Pack',  price: '$17',  color: '#14B8A6' },
-  { title: 'Starter Bundle',      type: 'Bundle',       price: '$79',  color: '#F59E0B' },
-  { title: 'DB Assistant',        type: 'MCP Server',   price: '$29',  color: '#8B5CF6' },
-  { title: 'Test Writer',         type: 'Claude Skill', price: '$22',  color: '#3B82F6' },
-  { title: 'Tweet Generator',     type: 'Prompt Pack',  price: 'Free', color: '#14B8A6' },
-]
-const COL_C = [
-  { title: 'Design Reviewer',     type: 'Claude Skill', price: '$24',  color: '#3B82F6' },
-  { title: 'Notion Sync',         type: 'MCP Server',   price: '$29',  color: '#8B5CF6' },
-  { title: 'Ad Generator',        type: 'Prompt Pack',  price: '$14',  color: '#14B8A6' },
-  { title: 'Full Stack Bundle',   type: 'Bundle',       price: '$99',  color: '#F59E0B' },
-  { title: 'Figma Connector',     type: 'MCP Server',   price: '$22',  color: '#8B5CF6' },
-  { title: 'Report Writer',       type: 'Workflow',     price: '$12',  color: '#10B981' },
-  { title: 'PR Summariser',       type: 'Claude Skill', price: 'Free', color: '#3B82F6' },
-  { title: 'Recipe Builder',      type: 'Prompt Pack',  price: '$7',   color: '#14B8A6' },
-  { title: 'CRM Sync',            type: 'MCP Server',   price: '$35',  color: '#8B5CF6' },
-  { title: 'Sprint Kit',          type: 'Bundle',       price: '$45',  color: '#F59E0B' },
-]
-const COL_D = [
-  { title: 'Support Agent',       type: 'Claude Skill', price: '$39',  color: '#3B82F6' },
-  { title: 'Linear Tracker',      type: 'MCP Server',   price: '$19',  color: '#8B5CF6' },
-  { title: 'Interview Prep',      type: 'Prompt Pack',  price: '$11',  color: '#14B8A6' },
-  { title: 'Sprint Planner',      type: 'Workflow',     price: '$14',  color: '#10B981' },
-  { title: 'Code Documenter',     type: 'Claude Skill', price: 'Free', color: '#3B82F6' },
-  { title: 'Analytics Bundle',    type: 'Bundle',       price: '$59',  color: '#F59E0B' },
-  { title: 'Calendar Sync',       type: 'MCP Server',   price: '$15',  color: '#8B5CF6' },
-  { title: 'Cover Letter Pro',    type: 'Prompt Pack',  price: '$8',   color: '#14B8A6' },
-  { title: 'Onboarding Kit',      type: 'Workflow',     price: '$24',  color: '#10B981' },
-  { title: 'Dev Bundle',          type: 'Bundle',       price: '$89',  color: '#F59E0B' },
+// ─── Card gradient / icon config (shared visual language with ListingCard) ───
+const TYPE_CONFIG = {
+  'Claude Skill': { Icon: Zap,           gradient: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)' },
+  'Prompt Pack':  { Icon: MessageSquare, gradient: 'linear-gradient(135deg, #14B8A6 0%, #2DD4BF 100%)' },
+  'MCP Server':   { Icon: Server,        gradient: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' },
+  'Workflow':     { Icon: GitBranch,     gradient: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' },
+  'Bundle':       { Icon: Package,       gradient: 'linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%)' },
+  'Template':     { Icon: Layout,        gradient: 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)' },
+}
+
+// ─── Column data (left = A+B merged, right = C+D merged for variety) ─────────
+const LEFT_CARDS = [
+  { title: 'Web Research Agent',  type: 'Claude Skill', price: '$29'  },
+  { title: 'GitHub MCP',          type: 'MCP Server',   price: '$39'  },
+  { title: 'Email Drafter',       type: 'Prompt Pack',  price: '$12'  },
+  { title: 'Meeting Notes',       type: 'Workflow',     price: 'Free' },
+  { title: 'Code Reviewer',       type: 'Claude Skill', price: 'Free' },
+  { title: 'SEO Pack Pro',        type: 'Prompt Pack',  price: '$19'  },
+  { title: 'Data Analysis Kit',   type: 'Bundle',       price: '$49'  },
+  { title: 'Jira Connector',      type: 'MCP Server',   price: '$25'  },
+  { title: 'Content Planner',     type: 'Workflow',     price: '$9'   },
+  { title: 'Bug Finder Pro',      type: 'Claude Skill', price: '$35'  },
+  { title: 'Blog Writer',         type: 'Prompt Pack',  price: '$9'   },
+  { title: 'Starter Bundle',      type: 'Bundle',       price: '$79'  },
 ]
 
-function BgCard({ title, type, price, color }) {
+const RIGHT_CARDS = [
+  { title: 'Design Reviewer',     type: 'Claude Skill', price: '$24'  },
+  { title: 'Notion Sync',         type: 'MCP Server',   price: '$29'  },
+  { title: 'Full Stack Bundle',   type: 'Bundle',       price: '$99'  },
+  { title: 'Report Writer',       type: 'Workflow',     price: '$12'  },
+  { title: 'Ad Generator',        type: 'Prompt Pack',  price: '$14'  },
+  { title: 'Support Agent',       type: 'Claude Skill', price: '$39'  },
+  { title: 'Linear Tracker',      type: 'MCP Server',   price: '$19'  },
+  { title: 'Sprint Planner',      type: 'Workflow',     price: '$14'  },
+  { title: 'Analytics Bundle',    type: 'Bundle',       price: '$59'  },
+  { title: 'Interview Prep',      type: 'Prompt Pack',  price: '$11'  },
+  { title: 'Code Documenter',     type: 'Claude Skill', price: 'Free' },
+  { title: 'Figma Connector',     type: 'MCP Server',   price: '$22'  },
+]
+
+function BgCard({ title, type, price }) {
+  const config = TYPE_CONFIG[type] ?? TYPE_CONFIG['Claude Skill']
+  const { Icon, gradient } = config
+
   return (
     <div
-      className="rounded-xl border border-border/60 bg-white shadow-sm mb-3 p-3.5 flex-shrink-0"
-      style={{ width: '160px' }}
+      className="rounded-xl border border-border/50 bg-white shadow-sm mb-3 flex-shrink-0 overflow-hidden"
+      style={{ width: '168px' }}
     >
-      <div
-        className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2 whitespace-nowrap"
-        style={{ backgroundColor: `${color}18`, color }}
-      >
-        {type}
+      <div className="h-[52px] flex items-center justify-center" style={{ background: gradient }}>
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+          <Icon size={15} strokeWidth={2} className="text-white" aria-hidden="true" />
+        </div>
       </div>
-      <div className="text-[13px] font-semibold text-primary leading-snug mb-1.5 line-clamp-2">{title}</div>
-      <div className="text-[12px] font-bold text-primary">{price}</div>
+      <div className="p-3">
+        <div className="text-[10px] font-semibold text-muted mb-1 truncate uppercase tracking-wide">{type}</div>
+        <div className="text-[12px] font-bold text-primary leading-snug mb-1.5 line-clamp-2">{title}</div>
+        <div className="text-[11px] font-semibold text-accent">{price}</div>
+      </div>
     </div>
   )
 }
@@ -96,7 +91,7 @@ export default function Hero() {
   return (
     <section id="top" className="relative bg-white overflow-hidden min-h-screen flex flex-col">
 
-      {/* ── Dot grid background ──────────────────────────────────────── */}
+      {/* Dot grid */}
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden="true"
@@ -106,7 +101,7 @@ export default function Hero() {
         }}
       />
 
-      {/* ── Subtle top blue glow ─────────────────────────────────────── */}
+      {/* Blue top glow */}
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden="true"
@@ -115,45 +110,46 @@ export default function Hero() {
         }}
       />
 
-      {/* ── Scrolling card columns (desktop only) ────────────────────── */}
+      {/* ── Scrolling card columns — 1 per side, desktop only ─────────── */}
       <div className="pointer-events-none absolute inset-0 hidden lg:block overflow-hidden" aria-hidden="true">
-        {/* Left side */}
-        <div className="absolute top-0 bottom-0 left-3 flex gap-3">
-          <BgColumn cards={COL_A} scrollUp duration={32} delay={-8} />
-          <BgColumn cards={COL_B} scrollUp={false} duration={40} delay={-15} />
+        {/* Left column */}
+        <div className="absolute top-0 bottom-0 left-4">
+          <BgColumn cards={LEFT_CARDS} scrollUp duration={55} delay={-12} />
         </div>
 
-        {/* Right side */}
-        <div className="absolute top-0 bottom-0 right-3 flex gap-3">
-          <BgColumn cards={COL_C} scrollUp={false} duration={36} delay={-5} />
-          <BgColumn cards={COL_D} scrollUp duration={28} delay={-20} />
+        {/* Right column */}
+        <div className="absolute top-0 bottom-0 right-4">
+          <BgColumn cards={RIGHT_CARDS} scrollUp={false} duration={62} delay={-28} />
         </div>
 
-        {/* Center white mask — keeps hero text area clean */}
+        {/* Center mask — clear at edges so cards are visible, solid white in the middle */}
         <div
           className="absolute inset-0"
           style={{
             background: [
               'linear-gradient(to right,',
-              '  transparent 0%,',
-              '  rgba(255,255,255,0.92) 18%,',
-              '  rgba(255,255,255,1) 26%,',
-              '  rgba(255,255,255,1) 74%,',
-              '  rgba(255,255,255,0.92) 82%,',
-              '  transparent 100%)',
+              '  rgba(255,255,255,0)    0%,',
+              '  rgba(255,255,255,0.05) 10%,',
+              '  rgba(255,255,255,0.9)  18%,',
+              '  rgba(255,255,255,1)    24%,',
+              '  rgba(255,255,255,1)    76%,',
+              '  rgba(255,255,255,0.9)  82%,',
+              '  rgba(255,255,255,0.05) 90%,',
+              '  rgba(255,255,255,0)    100%)',
             ].join(''),
           }}
         />
-        {/* Top + bottom fade */}
+
+        {/* Top + bottom vertical fade */}
         <div
           className="absolute inset-0"
           style={{
             background: [
               'linear-gradient(to bottom,',
-              '  rgba(255,255,255,0.6) 0%,',
-              '  transparent 12%,',
-              '  transparent 82%,',
-              '  rgba(255,255,255,0.7) 100%)',
+              '  rgba(255,255,255,0.7) 0%,',
+              '  transparent 10%,',
+              '  transparent 86%,',
+              '  rgba(255,255,255,0.5) 100%)',
             ].join(''),
           }}
         />
@@ -200,17 +196,17 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ── Marquee — pinned to bottom of first screen ───────────────── */}
-      <div className="relative bg-primary py-4 overflow-hidden flex-shrink-0" aria-hidden="true">
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-primary to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-primary to-transparent" />
-        <div className="flex w-max animate-marquee">
-          {marqueeItems.map((item, i) => (
-            <span key={i} className="flex items-center gap-4 px-3">
+      {/* ── Static category strip — pinned to bottom of first screen ─── */}
+      <div className="bg-primary py-4 flex-shrink-0">
+        <div className="flex items-center justify-center flex-wrap gap-x-5 gap-y-2 px-6">
+          {BASE_ITEMS.map((item, i) => (
+            <span key={i} className="flex items-center gap-5">
               <span className="text-[11px] font-semibold text-white/50 tracking-widest whitespace-nowrap">
                 {item}
               </span>
-              <span className="h-1 w-1 rounded-full bg-white/20 flex-shrink-0" />
+              {i < BASE_ITEMS.length - 1 && (
+                <span className="h-1 w-1 rounded-full bg-white/20 flex-shrink-0" />
+              )}
             </span>
           ))}
         </div>
