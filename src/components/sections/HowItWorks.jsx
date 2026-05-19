@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Search, ShoppingBag, Zap, PenTool, Upload, DollarSign } from 'lucide-react'
+import RevealOnScroll from '../ui/RevealOnScroll'
 
 const tabs = {
   buyers: {
@@ -49,46 +50,53 @@ export default function HowItWorks() {
   const { steps } = tabs[activeTab]
 
   return (
-    <section id="how-it-works" className="bg-white py-24">
+    <section id="how-it-works" className="bg-surface py-24 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
-        <h2 className="text-[36px] md:text-[48px] font-bold text-primary leading-[1.1] tracking-[-0.01em] text-center mb-10">
-          Simple to use. Powerful to build.
-        </h2>
+        <RevealOnScroll>
+          <h2 className="text-[36px] md:text-[48px] font-bold text-primary leading-[1.1] tracking-[-0.01em] text-center mb-10">
+            Simple to use. Powerful to build.
+          </h2>
+        </RevealOnScroll>
 
-        {/* Tab toggle */}
-        <div className="flex justify-center mb-14">
-          <div className="inline-flex items-center rounded-full border border-border bg-surface p-1 gap-1">
-            {Object.entries(tabs).map(([key, tab]) => (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`rounded-full px-5 py-2 text-[15px] font-semibold transition-colors duration-150 ${
-                  activeTab === key
-                    ? 'bg-primary text-white'
-                    : 'bg-transparent text-primary hover:text-accent'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+        <RevealOnScroll delay={100}>
+          <div className="flex justify-center mb-16">
+            <div className="inline-flex items-center rounded-full border border-border bg-white shadow-sm p-1 gap-1">
+              {Object.entries(tabs).map(([key, tab]) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  className={`rounded-full px-6 py-2.5 text-[15px] font-semibold transition-all duration-200 ${
+                    activeTab === key
+                      ? 'bg-primary text-white shadow-sm'
+                      : 'bg-transparent text-dark-mid hover:text-primary'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </RevealOnScroll>
 
-        {/* Steps */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
           {steps.map((step, i) => {
             const Icon = step.icon
             return (
-              <div key={i} className="flex flex-col items-start">
-                <p className="text-[11px] font-semibold uppercase tracking-widest3 text-muted mb-3">
-                  Step {i + 1}
-                </p>
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 border border-blue-100 mb-5">
-                  <Icon size={20} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
+              <RevealOnScroll key={`${activeTab}-${i}`} delay={i * 100}>
+                <div className="relative flex flex-col items-start p-6 rounded-2xl bg-white border border-border overflow-hidden">
+                  <span className="absolute top-4 right-5 text-[72px] font-bold text-primary/[0.04] leading-none select-none pointer-events-none">
+                    {i + 1}
+                  </span>
+                  <p className="text-[11px] font-semibold uppercase tracking-widest3 text-muted mb-4 relative">
+                    Step {i + 1}
+                  </p>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 border border-blue-100 mb-5 relative">
+                    <Icon size={22} strokeWidth={1.75} className="text-accent" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-[20px] font-bold text-primary leading-snug mb-2 relative">{step.title}</h3>
+                  <p className="text-[15px] text-dark-mid leading-relaxed relative">{step.description}</p>
                 </div>
-                <h3 className="text-[20px] font-bold text-primary leading-snug mb-2">{step.title}</h3>
-                <p className="text-[15px] text-dark-mid leading-relaxed">{step.description}</p>
-              </div>
+              </RevealOnScroll>
             )
           })}
         </div>

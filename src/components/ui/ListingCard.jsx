@@ -20,12 +20,12 @@ export default function ListingCard({ listing }) {
   const { category, title, description, creator, price, rating, reviews } = listing
 
   return (
-    <article className="group flex flex-col rounded-2xl border border-border bg-white p-5 transition-all duration-200 hover:border-accent hover:shadow-lg hover:-translate-y-0.5">
+    <article className="group flex flex-col rounded-2xl border border-border bg-white p-5 transition-all duration-300 cursor-pointer hover:border-accent/40 hover:shadow-[0_8px_32px_rgba(59,130,246,0.13)] hover:-translate-y-1">
       <div className="flex items-start justify-between gap-2 mb-3">
         <Badge category={category} />
         <ArrowUpRight
           size={16}
-          className="text-muted opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0 mt-0.5"
+          className="text-muted opacity-0 group-hover:opacity-100 transition-all duration-200 flex-shrink-0 mt-0.5 group-hover:text-accent"
           aria-hidden="true"
         />
       </div>

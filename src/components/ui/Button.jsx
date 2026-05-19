@@ -1,10 +1,16 @@
 const variants = {
-  primary: 'bg-accent text-white hover:bg-blue-600',
-  secondary: 'bg-primary text-white hover:bg-gray-800',
-  outline: 'bg-white text-primary border border-border hover:border-accent hover:text-accent',
-  ghost: 'bg-transparent text-primary hover:text-accent',
-  'outline-white': 'bg-transparent text-white border border-white/20 hover:bg-white/10',
-  white: 'bg-white text-primary hover:bg-accent hover:text-white',
+  primary:
+    'bg-gradient-to-b from-blue-500 to-blue-600 text-white shadow-[0_1px_2px_rgba(0,0,0,0.12),0_0_0_1px_rgba(59,130,246,0.15)] hover:from-blue-400 hover:to-blue-500 hover:shadow-[0_0_24px_rgba(59,130,246,0.4),0_1px_2px_rgba(0,0,0,0.1)] active:scale-[0.97]',
+  secondary:
+    'bg-primary text-white hover:bg-gray-800 active:scale-[0.97]',
+  outline:
+    'bg-white text-primary border border-border shadow-sm hover:border-accent hover:text-accent hover:shadow-md active:scale-[0.97]',
+  ghost:
+    'bg-transparent text-primary hover:text-accent active:scale-[0.97]',
+  'outline-white':
+    'bg-transparent text-white border border-white/20 hover:bg-white/10 active:scale-[0.97]',
+  white:
+    'bg-white text-primary shadow-sm hover:bg-accent hover:text-white hover:shadow-[0_0_24px_rgba(59,130,246,0.35)] active:scale-[0.97]',
 }
 
 const sizeClasses = {
@@ -26,7 +32,7 @@ export default function Button({
   ...props
 }) {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-[0.02em] transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed'
+    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-[0.02em] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed'
 
   const classes = [base, variants[variant] ?? variants.primary, sizeClasses[size] ?? sizeClasses.md, className]
     .filter(Boolean)
