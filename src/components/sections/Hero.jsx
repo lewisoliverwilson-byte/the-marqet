@@ -319,17 +319,17 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Marquee — flush with viewport bottom */}
+      {/* Static bar — flush with viewport bottom */}
       <div className="absolute bottom-0 left-0 right-0 bg-primary py-4 overflow-hidden z-10" aria-hidden="true">
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-primary to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-primary to-transparent" />
-        <div className="flex w-max animate-marquee">
-          {marqueeItems.map((item, i) => (
+        <div className="flex items-center justify-center flex-wrap gap-x-1">
+          {BASE_ITEMS.map((item, i) => (
             <span key={i} className="flex items-center gap-4 px-3">
               <span className="text-[11px] font-semibold text-white/50 tracking-widest whitespace-nowrap">
                 {item}
               </span>
-              <span className="h-1 w-1 rounded-full bg-white/20 flex-shrink-0" />
+              {i < BASE_ITEMS.length - 1 && (
+                <span className="h-1 w-1 rounded-full bg-white/20 flex-shrink-0" />
+              )}
             </span>
           ))}
         </div>
