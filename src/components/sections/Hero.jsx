@@ -12,7 +12,7 @@ const CYCLE_WORDS = [
   'Claude skills.',
   'MCP servers.',
   'AI workflows.',
-  'prompt packs.',
+  'Prompt packs.',
   'AI agents.',
 ]
 
@@ -84,6 +84,8 @@ function CyclingWord() {
         color: '#3B82F6',
         verticalAlign: 'bottom',
         lineHeight: 'inherit',
+        paddingBottom: '0.18em',  /* space for descenders (p, g, y…) */
+        marginBottom: '-0.18em', /* cancel the layout shift from the padding */
       }}
     >
       {/*
@@ -114,7 +116,7 @@ function CyclingWord() {
           position: 'absolute',
           inset: 0,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           whiteSpace: 'nowrap',
           animation: incoming !== null
             ? 'ticker-exit 0.48s cubic-bezier(0.4, 0, 0.6, 1) forwards'
@@ -317,8 +319,8 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Marquee — absolute bottom so it's always flush with viewport edge */}
-      <div className="absolute bottom-0 left-0 right-0 bg-primary py-4 overflow-hidden z-10" aria-hidden="true">
+      {/* Marquee — slightly below viewport edge for a peek effect */}
+      <div className="absolute left-0 right-0 bg-primary py-4 overflow-hidden z-10" style={{ bottom: '-22px' }} aria-hidden="true">
         <div className="pointer-events-none absolute inset-y-0 left-0 w-20 z-10 bg-gradient-to-r from-primary to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-20 z-10 bg-gradient-to-l from-primary to-transparent" />
         <div className="flex w-max animate-marquee">
