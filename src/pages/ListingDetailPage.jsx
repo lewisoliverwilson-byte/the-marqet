@@ -9,7 +9,7 @@ import PageLayout from '../components/layout/PageLayout'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
 import { listings } from '../data/listings'
-import { getListingVisual } from '../lib/listingVisuals'
+import { getListingVisual, getTreatment } from '../lib/listingVisuals'
 
 const toSlug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
@@ -272,7 +272,9 @@ export default function ListingDetailPage() {
 
   const { category, title, description, creator, price, rating, reviews } = listing
   const isFree = price === 'Free'
-  const { Icon, badge, gradient } = getListingVisual(listing)
+  const visual = getListingVisual(listing)
+  const { Icon, badge, snippet, gridIcons, gradient } = visual
+  const treatment = getTreatment(listing, visual)
   const installConfig = INSTALL_STEPS[category] ?? INSTALL_STEPS['Claude Skills']
 
   function handleCopy() {
@@ -303,20 +305,79 @@ export default function ListingDetailPage() {
 
           {/* ── Left column ── */}
           <div>
-            {/* Hero gradient */}
-            <div
-              className="rounded-2xl mb-6 h-[140px] flex items-center justify-center relative overflow-hidden"
-              style={{ background: gradient }}
-            >
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-                <Icon size={32} strokeWidth={1.75} className="text-white" />
+            {/* Hero — treatment-aware, 140px tall */}
+            {treatment === 'stat' && (() => {
+              const [count, ...rest] = (badge || '').split(' ')
+              const unit = rest.join(' ').toUpperCase()
+              return (
+                <div className="rounded-2xl mb-6 h-[140px] relative overflow-hidden" style={{ background: gradient }}>
+                  <span aria-hidden="true" style={{ position: 'absolute', right: 8, top: -18, fontSize: 148, fontWeight: 900, lineHeight: 1, color: 'rgba(255,255,255,0.13)', letterSpacing: '-0.06em', userSelect: 'none', fontFamily: 'inherit' }}>
+                    {count}
+                  </span>
+                  <div style={{ position: 'absolute', bottom: 18, left: 20 }}>
+                    <Icon size={32} strokeWidth={1.75} className="text-white/90 mb-2" />
+                    <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', margin: 0, lineHeight: 1 }}>{unit}</p>
+                  </div>
+                </div>
+              )
+            })()}
+            {treatment === 'terminal' && (
+              <div className="rounded-2xl mb-6 h-[140px] relative overflow-hidden" style={{ background: '#0f111a', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ position: 'absolute', top: 14, left: 16, display: 'flex', gap: 5 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#FF5F57', display: 'block' }} />
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#FFBD2E', display: 'block' }} />
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#28CA41', display: 'block' }} />
+                </div>
+                <div style={{ position: 'absolute', bottom: 20, left: 18, right: 18 }}>
+                  <span style={{ display: 'block', fontSize: 13, fontFamily: 'monospace', color: '#4ADE80', marginBottom: 4 }}>$ claude</span>
+                  <span style={{ display: 'block', fontSize: 13, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)' }}>{snippet || '> mcp tool connected'}</span>
+                </div>
               </div>
-              {badge && (
-                <span className="absolute bottom-3 right-4 rounded-full bg-white/20 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold text-white/90 tracking-wide">
-                  {badge}
-                </span>
-              )}
-            </div>
+            )}
+            {treatment === 'abstract' && (
+              <div className="rounded-2xl mb-6 h-[140px] relative overflow-hidden flex items-center justify-center" style={{ background: gradient }}>
+                <svg aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.28 }} viewBox="0 0 640 140" preserveAspectRatio="xMidYMid slice">
+                  <circle cx="30" cy="30" r="3.5" fill="white" />
+                  <circle cx="120" cy="55" r="3" fill="white" />
+                  <circle cx="200" cy="20" r="3.5" fill="white" />
+                  <circle cx="320" cy="60" r="4" fill="white" opacity="0.6" />
+                  <circle cx="420" cy="25" r="3" fill="white" />
+                  <circle cx="520" cy="50" r="3.5" fill="white" />
+                  <circle cx="600" cy="30" r="3" fill="white" />
+                  <circle cx="60" cy="110" r="3" fill="white" />
+                  <circle cx="180" cy="120" r="3.5" fill="white" />
+                  <circle cx="300" cy="115" r="3" fill="white" />
+                  <circle cx="440" cy="110" r="3.5" fill="white" />
+                  <circle cx="570" cy="118" r="3" fill="white" />
+                  <line x1="30" y1="30" x2="120" y2="55" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="120" y1="55" x2="200" y2="20" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="200" y1="20" x2="320" y2="60" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="320" y1="60" x2="420" y2="25" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="420" y1="25" x2="520" y2="50" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="520" y1="50" x2="600" y2="30" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="60" y1="110" x2="180" y2="120" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="180" y1="120" x2="300" y2="115" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="300" y1="115" x2="440" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="440" y1="110" x2="570" y2="118" stroke="white" strokeWidth="1" strokeOpacity="0.5" />
+                  <line x1="120" y1="55" x2="60" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.3" />
+                  <line x1="320" y1="60" x2="300" y2="115" stroke="white" strokeWidth="1" strokeOpacity="0.3" />
+                  <line x1="420" y1="25" x2="440" y2="110" stroke="white" strokeWidth="1" strokeOpacity="0.3" />
+                </svg>
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm relative z-10">
+                  <Icon size={32} strokeWidth={1.75} className="text-white" />
+                </div>
+              </div>
+            )}
+            {treatment === 'grid' && (
+              <div className="rounded-2xl mb-6 h-[140px] grid grid-cols-2 gap-2.5 p-3 relative overflow-hidden" style={{ background: gradient }}>
+                <div aria-hidden="true" style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)', backgroundSize: '18px 18px' }} />
+                {gridIcons.slice(0, 4).map((GridIcon, i) => (
+                  <div key={i} className="flex items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm relative z-10">
+                    <GridIcon size={24} strokeWidth={1.75} className="text-white" />
+                  </div>
+                ))}
+              </div>
+            )}
 
             <Badge category={category} className="mb-3" />
             <h1 className="text-[32px] md:text-[40px] font-bold text-primary leading-tight tracking-[-0.02em] mb-3">

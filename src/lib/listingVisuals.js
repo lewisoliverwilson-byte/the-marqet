@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 
 const LISTING_ICON_MAP = {
+  // Claude Code command bundles → stat treatment
   'GitFlow Pro':      { Icon: GitMerge,       badge: '7 commands' },
   'Release Captain':  { Icon: Rocket,          badge: '6 commands' },
   'Test Forge':       { Icon: FlaskConical,    badge: '5 commands' },
@@ -22,6 +23,7 @@ const LISTING_ICON_MAP = {
   'Content Studio':   { Icon: PenLine,          badge: '5 commands' },
   'Inbox Zero':       { Icon: Mail,             badge: '5 commands' },
   'Founder Ops':      { Icon: Building2,        badge: '5 commands' },
+  // Claude Skills (system prompt style) → node graph treatment
   'Accessibility Auditor':        { Icon: Eye },
   'API Contract Tester':          { Icon: FileCode2 },
   'Migration Safeguard':          { Icon: ShieldAlert },
@@ -42,14 +44,16 @@ const LISTING_ICON_MAP = {
   'SEO Content Briefer':          { Icon: Search },
   'Data Story Teller':            { Icon: LineChart },
   'Email Inbox Triager':          { Icon: Inbox },
-  'Local Knowledge Base MCP': { Icon: HardDrive },
-  'SQLite Explorer MCP':       { Icon: Table2 },
-  'Obsidian Vault MCP':        { Icon: BookMarked },
-  'iCal Calendar MCP':         { Icon: Calendar },
-  'Web Clipper MCP':           { Icon: Globe },
-  'CSV Analytics MCP':         { Icon: BarChart3 },
-  'Bookmark Manager MCP':      { Icon: Bookmark },
-  'Time Tracker MCP':          { Icon: Clock },
+  // MCP Servers → terminal treatment
+  'Local Knowledge Base MCP': { Icon: HardDrive, snippet: '> search "quarterly report"' },
+  'SQLite Explorer MCP':       { Icon: Table2,    snippet: '> query users LIMIT 10' },
+  'Obsidian Vault MCP':        { Icon: BookMarked, snippet: '> note "team meeting"' },
+  'iCal Calendar MCP':         { Icon: Calendar,  snippet: '> events today' },
+  'Web Clipper MCP':           { Icon: Globe,     snippet: '> clip example.com/blog' },
+  'CSV Analytics MCP':         { Icon: BarChart3, snippet: '> query data.csv' },
+  'Bookmark Manager MCP':      { Icon: Bookmark,  snippet: '> find "react hooks"' },
+  'Time Tracker MCP':          { Icon: Clock,     snippet: '> timer start coding' },
+  // Prompt Packs → stat treatment
   'Startup Fundraising Pack':      { Icon: DollarSign,     badge: '12 prompts' },
   'SaaS Growth Marketing Pack':    { Icon: TrendingUp,     badge: '12 prompts' },
   'Real Estate Agent Pack':        { Icon: Home,            badge: '12 prompts' },
@@ -70,6 +74,11 @@ const LISTING_ICON_MAP = {
   'Event Planning Pack':           { Icon: CalendarCheck,   badge: '12 prompts' },
   'Technical Writing Pack':        { Icon: FileText,        badge: '12 prompts' },
   'Personal Productivity Pack':    { Icon: CheckSquare,     badge: '12 prompts' },
+  // Bundles → grid treatment
+  'Developer Starter Bundle': {
+    Icon: Package,
+    gridIcons: [GitMerge, ShieldAlert, FlaskConical, Database],
+  },
 }
 
 const CATEGORY_GRADIENTS = {
@@ -108,11 +117,22 @@ const CATEGORY_FALLBACK = {
   'Bundles': Package, bundle: Package,
 }
 
+const BUNDLE_GRID_FALLBACK = [Zap, Server, GitBranch, Package]
+
 export function getListingVisual(listing) {
-  const titleConfig = LISTING_ICON_MAP[listing.title]
-  const Icon = titleConfig?.Icon ?? CATEGORY_FALLBACK[listing.category] ?? Zap
-  const badge = titleConfig?.badge ?? null
+  const titleConfig = LISTING_ICON_MAP[listing.title] ?? {}
+  const Icon = titleConfig.Icon ?? CATEGORY_FALLBACK[listing.category] ?? Zap
+  const badge = titleConfig.badge ?? null
+  const snippet = titleConfig.snippet ?? null
+  const gridIcons = titleConfig.gridIcons ?? BUNDLE_GRID_FALLBACK
   const gradients = CATEGORY_GRADIENTS[listing.category] ?? CATEGORY_GRADIENTS['Claude Skills']
   const gradient = gradients[(listing.id ?? 0) % gradients.length]
-  return { Icon, badge, gradient }
+  return { Icon, badge, snippet, gridIcons, gradient }
+}
+
+export function getTreatment(listing, visual) {
+  if (listing.category === 'MCP Servers' || listing.category === 'mcp_server') return 'terminal'
+  if (listing.category === 'Bundles' || listing.category === 'bundle') return 'grid'
+  if (visual.badge) return 'stat'
+  return 'abstract'
 }
