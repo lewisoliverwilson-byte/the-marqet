@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthContext'
@@ -6,6 +7,7 @@ import CommandPalette from './components/ui/CommandPalette'
 import Landing from './pages/Landing'
 import BrowsePage from './pages/BrowsePage'
 import SkillDetailPage from './pages/SkillDetailPage'
+import ListingDetailPage from './pages/ListingDetailPage'
 import SubmitPage from './pages/SubmitPage'
 import DashboardPage from './pages/DashboardPage'
 import DashboardSettingsPage from './pages/DashboardSettingsPage'
@@ -22,6 +24,7 @@ import AuthCallbackPage from './pages/auth/AuthCallbackPage'
 
 import AdminDashboard from './pages/admin/AdminDashboard'
 import CustomCursor from './components/ui/CustomCursor'
+import SplashScreen from './components/ui/SplashScreen'
 
 import TermsPage from './pages/legal/TermsPage'
 import PrivacyPage from './pages/legal/PrivacyPage'
@@ -43,6 +46,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Landing /> },
       { path: '/browse', element: <BrowsePage /> },
+      { path: '/listing/:slug', element: <ListingDetailPage /> },
       { path: '/skills/:slug', element: <SkillDetailPage /> },
       { path: '/submit', element: <SubmitPage /> },
       { path: '/dashboard', element: <DashboardPage /> },
@@ -66,9 +70,19 @@ const router = createBrowserRouter([
 ])
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(
+    () => !sessionStorage.getItem('marqet-splash-seen')
+  )
+
+  const handleSplashDone = () => {
+    sessionStorage.setItem('marqet-splash-seen', 'true')
+    setShowSplash(false)
+  }
+
   return (
     <AuthProvider>
       <CustomCursor />
+      {showSplash && <SplashScreen onDone={handleSplashDone} />}
       <RouterProvider router={router} />
       <Toaster
         position="bottom-center"
