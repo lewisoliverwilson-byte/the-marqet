@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   Star, Download, Copy, CheckCircle, ArrowLeft, ShieldCheck,
-  X, Mail, Terminal, FileText, Layers, Server,
+  X, Mail, Terminal, FileText, Layers, Server, Lock, Zap,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import PageLayout from '../components/layout/PageLayout'
@@ -134,6 +134,11 @@ function PaymentModal({ listing, onClose }) {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const isFree = listing.price === 'Free'
+  const hasCheckout = !!listing.stripeLink && !isFree
+
+  function handleStripeRedirect() {
+    window.location.href = listing.stripeLink
+  }
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -173,7 +178,35 @@ function PaymentModal({ listing, onClose }) {
           </div>
         </div>
 
-        {submitted ? (
+        {hasCheckout ? (
+          <div className="px-6 pb-6">
+            <div className="mb-5 space-y-2.5">
+              <div className="flex items-center gap-2 text-[13px] text-dark-mid">
+                <ShieldCheck size={14} className="text-accent flex-shrink-0" />
+                Secure checkout powered by Stripe
+              </div>
+              <div className="flex items-center gap-2 text-[13px] text-dark-mid">
+                <CheckCircle size={14} className="text-accent flex-shrink-0" />
+                Instant access — content delivered on confirmation
+              </div>
+              <div className="flex items-center gap-2 text-[13px] text-dark-mid">
+                <CheckCircle size={14} className="text-accent flex-shrink-0" />
+                30-day money-back guarantee, no questions asked
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              size="md"
+              className="w-full justify-center"
+              onClick={handleStripeRedirect}
+            >
+              Continue to payment — {listing.price}
+            </Button>
+            <p className="text-[11px] text-muted text-center mt-3">
+              You'll be redirected to Stripe's secure checkout.
+            </p>
+          </div>
+        ) : submitted ? (
           <div className="px-6 pb-8 text-center">
             <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 mb-4">
               <CheckCircle size={28} className="text-accent" />
@@ -398,6 +431,58 @@ export default function ListingDetailPage() {
                 <p className="text-[12px] text-muted">Verified seller</p>
               </div>
             </div>
+
+            {/* Content preview — shown for listings with embedded content */}
+            {listing.content && (
+              <div className="mb-10">
+                <h2 className="text-[22px] font-bold text-primary mb-1">What's inside</h2>
+                <p className="text-[14px] text-muted mb-6">
+                  Full content is delivered instantly on the confirmation page after purchase.
+                </p>
+
+                {listing.content.systemPrompt && (
+                  <div className="rounded-xl border border-border overflow-hidden mb-4">
+                    <div className="px-4 py-3 border-b border-border bg-surface flex items-center gap-2">
+                      <Zap size={13} className="text-accent" aria-hidden />
+                      <span className="text-[13px] font-bold text-primary">System Prompt</span>
+                      <span className="text-[11px] text-muted">— paste into Claude.ai Project instructions</span>
+                    </div>
+                    <div className="relative px-4 py-4 bg-white">
+                      <p className="text-[12px] text-dark-mid font-mono leading-relaxed opacity-60 line-clamp-3">
+                        {listing.content.systemPrompt}
+                      </p>
+                      <div
+                        className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
+                        style={{ background: 'linear-gradient(to top, white 40%, transparent)' }}
+                      />
+                    </div>
+                    <div className="px-4 py-2 border-t border-border bg-surface flex items-center gap-1.5">
+                      <Lock size={10} className="text-muted" aria-hidden />
+                      <span className="text-[11px] text-muted">Full prompt unlocked after purchase</span>
+                    </div>
+                  </div>
+                )}
+
+                {listing.content.prompts?.length > 0 && (
+                  <div className="space-y-2">
+                    {listing.content.prompts.map((prompt, i) => (
+                      <div key={i} className="flex items-start gap-3 rounded-xl border border-border bg-white px-4 py-3">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 border border-blue-100 text-[10px] font-bold text-accent flex-shrink-0 mt-0.5">
+                          {i + 1}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[13px] font-semibold text-primary flex items-center gap-1.5">
+                            <span>{prompt.title}</span>
+                            <Lock size={10} className="text-muted flex-shrink-0" aria-hidden />
+                          </p>
+                          <p className="text-[12px] text-muted leading-relaxed">{prompt.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Install instructions */}
             <div className="mb-10">

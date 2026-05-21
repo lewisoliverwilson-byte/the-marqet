@@ -555,6 +555,122 @@ const promptPacks = [
     price: '£5.99',
     rating: 4.7,
     reviews: 58,
+    // Create a Stripe Payment Link at dashboard.stripe.com → Payment Links
+    // Set the success URL to: https://themarqet.com/purchase/success?listing=hr-recruiting-pack
+    // Set the cancel URL to:  https://themarqet.com/purchase/cancelled?listing=hr-recruiting-pack
+    // Test mode link — update after_completion URL in Stripe dashboard before going live
+    stripeLink: 'https://buy.stripe.com/test_fZueV6gboeUP7H4fdR7AI00',
+    content: {
+      systemPrompt: `You are an expert HR and recruiting assistant with deep experience across full-cycle talent acquisition, employee relations, and people operations. You help HR professionals and recruiters work faster and more effectively.
+
+When drafting job descriptions: lead with mission and impact before requirements. Use inclusive, direct language. Keep requirements lists short and honest — list only what is truly essential, not a wish list. Avoid buzzwords.
+
+When reviewing candidates: focus on relevant transferable skills and growth trajectory, not credentials alone. Flag potential gaps honestly.
+
+When handling sensitive HR situations such as performance management, terminations, or disciplinary processes: be clear, professional, and legally cautious. Recommend involving employment counsel whenever there is meaningful legal risk.
+
+Be direct and practical. Avoid HR jargon. When the user pastes job descriptions, CVs, or notes, analyse them thoroughly before asking clarifying questions.`,
+      prompts: [
+        {
+          title: 'Write a Job Description',
+          description: 'Draft a compelling, inclusive job description for any role.',
+          text: `Write a job description for the following role. Lead with what the person will accomplish in their first 6 months (impact), then cover day-to-day responsibilities, then requirements. Keep the requirements list short — only truly necessary skills. Use inclusive, direct language. Avoid buzzwords.
+
+Role: [Job title]
+Team: [Team name and what they do]
+Level: [Junior / Mid / Senior / Lead]
+Location: [Remote / Hybrid / On-site, city]
+Salary range: [Range or "competitive"]
+Reporting to: [Manager title]
+Key things this person will own: [List 2–3 things]
+
+Format:
+— Role overview (2–3 sentences)
+— What you'll do (5–6 bullets, outcome-focused)
+— What we're looking for (4–6 bullets, essential only)
+— Nice to have (2–3 bullets, optional)
+— What we offer (benefits, culture — concise)`,
+        },
+        {
+          title: 'Generate an Interview Scorecard',
+          description: 'Build a structured scorecard with competencies and clear scoring rubric.',
+          text: `Create a structured interview scorecard for the following role. Include 5–6 key competencies, one interview question per competency, and a 1–5 scoring rubric for each. The rubric must describe what a 1, 3, and 5 answer actually looks like — not just "poor / average / excellent."
+
+Role: [Job title]
+Level: [Junior / Senior / etc.]
+The 3 most important things for success in this role: [List them]
+Interview format: [30-min phone screen / 1-hour technical / panel / etc.]
+
+Format as a table: Competency | Interview question | 5 looks like | 3 looks like | 1 looks like | Score`,
+        },
+        {
+          title: 'Write an Offer Letter',
+          description: 'Draft a warm, clear offer letter that makes the candidate want to sign.',
+          text: `Draft a professional but warm offer letter for a new hire. Include all key terms, express genuine excitement, and make it easy to say yes. Avoid legalese — our legal team handles the employment contract separately.
+
+Candidate name: [Full name]
+Role: [Job title]
+Department: [Department]
+Start date: [Date]
+Base salary: [Amount and frequency]
+Bonus or commission: [If applicable, or leave blank]
+Key benefits: [Health, pension, equity, etc. — list the highlights]
+Reporting to: [Manager name and title]
+Location: [On-site / hybrid / remote and where]
+Offer expiry: [Date — usually 5–7 business days]
+
+Tone: warm and professional. End with one personal sentence about why we are excited for them to join.`,
+        },
+        {
+          title: 'Write a Candidate Rejection Email',
+          description: 'Compassionate, specific rejection that leaves candidates feeling respected.',
+          text: `Write a rejection email for a candidate who reached the stage below. Make it feel human and specific — not a form letter. Be honest and kind. Do not promise feedback you will not give, but include useful feedback briefly if you have it.
+
+Candidate name: [First name]
+Role they applied for: [Job title]
+Stage they reached: [CV screen / phone screen / first interview / final round]
+Reason for not progressing (honest but tactful): [e.g. "another candidate was a stronger technical fit" / "we restructured the role" / "needed more experience in X"]
+Feedback to share (optional — leave blank if none): [Feedback]
+Open to future roles?: [Yes / No]
+
+Keep it under 150 words. No waffle.`,
+        },
+        {
+          title: 'Create Screening Questions',
+          description: 'Generate targeted questions to filter candidates efficiently at the application stage.',
+          text: `Generate 6–8 screening questions for the following role to use in an initial application form or phone screen. Mix of must-have filters (knock-out questions) and insight questions. Each question should include a note on what a strong answer looks like.
+
+Role: [Job title]
+Absolute must-haves: [List 2–3 hard requirements]
+Nice-to-haves: [List 1–2 preferred skills]
+Common red flags to screen for: [e.g. "no experience managing direct reports" / "no domain-relevant background"]
+Format: [Multiple choice / Short written answer / Phone screen prompts]
+
+For each question provide: Question | Format | What a strong answer includes | Knock-out question? (Yes/No)`,
+        },
+        {
+          title: 'Draft a Performance Review Framework',
+          description: 'Build a fair, consistent review process tailored to your team.',
+          text: `Design a performance review framework for the following team. Include: rating scale with clear descriptors, core competencies to assess, suggested self-review questions, suggested manager review questions, and guidance on calibration to reduce ratings drift.
+
+Team or role type: [Engineering / Sales / Operations / etc.]
+Review frequency: [Annual / Bi-annual / Quarterly]
+Team size: [Number of people]
+Current problems with reviews: [e.g. "ratings drift too high" / "feedback is too vague" / "no consistency across managers" / "managers lack time"]
+Most important behaviours for this team: [List 2–3]
+
+Output should be immediately usable — not a generic HR template.`,
+        },
+      ],
+      quickStart: [
+        'Copy the System Prompt above.',
+        'Open Claude.ai and create a new Project — name it "HR & Recruiting Assistant."',
+        'Paste the System Prompt into "Project instructions" — this configures Claude for your HR workflows.',
+        'Use each individual prompt by copying it into any conversation inside that project.',
+        'Fill in the bracketed fields [like this] with your real details before sending.',
+        'Save your best outputs as templates to reuse for similar roles or situations.',
+      ],
+    },
   },
   {
     id: 91,

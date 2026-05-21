@@ -30,6 +30,10 @@ import TermsPage from './pages/legal/TermsPage'
 import PrivacyPage from './pages/legal/PrivacyPage'
 import CookiesPage from './pages/legal/CookiesPage'
 import AcceptableUsePage from './pages/legal/AcceptableUsePage'
+import PurchaseSuccessPage from './pages/PurchaseSuccessPage'
+import PurchaseCancelledPage from './pages/PurchaseCancelledPage'
+import RecruiterPage from './pages/RecruiterPage'
+import NewsletterPage from './pages/NewsletterPage'
 
 function RootLayout() {
   return (
@@ -64,6 +68,10 @@ const router = createBrowserRouter([
       { path: '/legal/privacy', element: <PrivacyPage /> },
       { path: '/legal/cookies', element: <CookiesPage /> },
       { path: '/legal/acceptable-use', element: <AcceptableUsePage /> },
+      { path: '/purchase/success', element: <PurchaseSuccessPage /> },
+      { path: '/purchase/cancelled', element: <PurchaseCancelledPage /> },
+      { path: '/recruiter', element: <RecruiterPage /> },
+      { path: '/newsletter', element: <NewsletterPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

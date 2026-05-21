@@ -4,7 +4,7 @@ import { listings } from '../../data/listings'
 import ListingCard from '../ui/ListingCard'
 import RevealOnScroll from '../ui/RevealOnScroll'
 
-const FEATURED_IDS = [38, 14, 62, 64, 85, 99]
+const FEATURED_IDS = [90, 38, 14, 62, 64, 99]
 const featured = FEATURED_IDS.map(id => listings.find(l => l.id === id)).filter(Boolean)
 
 export default function FeaturedListings() {
