@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router-dom'
 import { Search, SlidersHorizontal, X, Star, Zap, TrendingUp } from 'lucide-react'
 import PageLayout from '../components/layout/PageLayout'
-import ListingCard from '../components/ui/ListingCard'
+import ListingCard, { toSlug } from '../components/ui/ListingCard'
 import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
 import { getSkills } from '../lib/api'
@@ -59,8 +59,8 @@ function MarqetPick({ listing }) {
   const { category, title, description, creator, price, rating, reviews } = listing
   return (
     <div className="col-span-full mb-2">
-      <a
-        href="/browse"
+      <Link
+        to={`/listing/${toSlug(listing.title)}`}
         className="group flex items-center gap-5 rounded-2xl border border-accent/20 bg-gradient-to-r from-accent/[0.04] via-accent/[0.02] to-transparent p-5 transition-all duration-200 hover:border-accent/35 hover:shadow-[0_2px_16px_rgba(59,130,246,0.1)] hover:-translate-y-0.5 cursor-pointer"
       >
         {/* Category icon */}
@@ -89,7 +89,7 @@ function MarqetPick({ listing }) {
           )}
           <p className="text-[12px] text-muted mt-0.5">by {creator}</p>
         </div>
-      </a>
+      </Link>
     </div>
   )
 }
@@ -118,7 +118,7 @@ export default function BrowsePage() {
     try {
       const result = await getSkills({ category: category || undefined, search: search || undefined, sort, free: free || undefined, page, limit: LIMIT })
 
-      if (!isConfigured || result.data.length === 0) {
+      if (!isConfigured) {
         // Local dev: use mock data with filtering
         let mock = [...MOCK_LISTINGS]
         if (category) {

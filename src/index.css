@@ -7,6 +7,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .tracking-widest2 { letter-spacing: 0.14em; }
+  .tracking-widest3 { letter-spacing: 0.18em; }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const variants = {
   primary:
     'bg-accent text-white hover:bg-blue-600 shadow-[0_1px_2px_rgba(0,0,0,0.12)] hover:shadow-[0_4px_16px_rgba(59,130,246,0.38)] active:scale-[0.97]',
@@ -39,8 +41,17 @@ export default function Button({
     .join(' ')
 
   if (href) {
+    // Internal paths (starting with / or #) use React Router Link to avoid full page reloads
+    const isInternal = href.startsWith('/') || href.startsWith('#')
+    if (isInternal) {
+      return (
+        <Link to={href} className={classes} {...props}>
+          {children}
+        </Link>
+      )
+    }
     return (
-      <a href={href} className={classes} {...props}>
+      <a href={href} className={classes} target="_blank" rel="noopener noreferrer" {...props}>
         {children}
       </a>
     )

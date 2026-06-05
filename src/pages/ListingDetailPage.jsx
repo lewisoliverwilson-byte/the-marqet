@@ -13,6 +13,16 @@ import { getListingVisual, getTreatment } from '../lib/listingVisuals'
 
 const toSlug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
+// Category display name → URL category ID (matches BrowsePage filter keys)
+const CAT_NAME_TO_ID = {
+  'Claude Skills': 'claude_skill',
+  'MCP Servers':   'mcp_server',
+  'Prompt Packs':  'prompt_pack',
+  'Workflows':     'workflow',
+  'Templates':     'template',
+  'Bundles':       'bundle',
+}
+
 // ─── Install instructions per category ──────────────────────────────────────
 
 const INSTALL_STEPS = {
@@ -327,7 +337,7 @@ export default function ListingDetailPage() {
             <ArrowLeft size={13} /> Browse
           </Link>
           <span>/</span>
-          <Link to={`/browse?category=${encodeURIComponent(category)}`} className="hover:text-primary transition-colors">
+          <Link to={`/browse?category=${CAT_NAME_TO_ID[category] || encodeURIComponent(category)}`} className="hover:text-primary transition-colors">
             {category}
           </Link>
           <span>/</span>

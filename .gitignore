@@ -29,3 +29,9 @@ dist-ssr
 
 # Amplify Gen 2 local sandbox outputs (committed version is production)
 .amplify/
+
+# Stripe utility scripts — contain secret keys, run locally only
+create_stripe_links.js
+create_stripe_links.cjs
+patch_listings.cjs
+stripe_links.json

@@ -7,10 +7,12 @@ import {
   BookMarked, Calendar, Globe, Bookmark, Clock, DollarSign, Home, ShoppingBag,
   Mic, Briefcase, Headphones, Target, Wallet, GraduationCap, Heart, Radio,
   CalendarCheck, CheckSquare, Scale, FileText, BarChart2, PenLine,
+  // New icons for 104 expanded products
+  Camera, Music, Trophy, Utensils, Truck, Film, Leaf, Megaphone, Car, Cloud,
 } from 'lucide-react'
 
 const LISTING_ICON_MAP = {
-  // Claude Code command bundles → stat treatment
+  // ── Claude Code command bundles → stat treatment ──────────────────────────
   'GitFlow Pro':      { Icon: GitMerge,       badge: '7 commands' },
   'Release Captain':  { Icon: Rocket,          badge: '6 commands' },
   'Test Forge':       { Icon: FlaskConical,    badge: '5 commands' },
@@ -23,7 +25,8 @@ const LISTING_ICON_MAP = {
   'Content Studio':   { Icon: PenLine,          badge: '5 commands' },
   'Inbox Zero':       { Icon: Mail,             badge: '5 commands' },
   'Founder Ops':      { Icon: Building2,        badge: '5 commands' },
-  // Claude Skills (system prompt style) → node graph treatment
+
+  // ── Claude Skills (system prompt style) → abstract treatment ─────────────
   'Accessibility Auditor':        { Icon: Eye },
   'API Contract Tester':          { Icon: FileCode2 },
   'Migration Safeguard':          { Icon: ShieldAlert },
@@ -44,16 +47,59 @@ const LISTING_ICON_MAP = {
   'SEO Content Briefer':          { Icon: Search },
   'Data Story Teller':            { Icon: LineChart },
   'Email Inbox Triager':          { Icon: Inbox },
-  // MCP Servers → terminal treatment
-  'Local Knowledge Base MCP': { Icon: HardDrive, snippet: '> search "quarterly report"' },
-  'SQLite Explorer MCP':       { Icon: Table2,    snippet: '> query users LIMIT 10' },
+
+  // ── New Claude Skills (IDs 140–164) → abstract treatment ─────────────────
+  'Code Review Assistant':         { Icon: Eye },
+  'Database Schema Designer':      { Icon: Database },
+  'Sprint Retrospective Facilitator': { Icon: Users },
+  'OKR Setting Coach':             { Icon: Target },
+  'System Design Explainer':       { Icon: LayoutDashboard },
+  'Architecture Decision Recorder': { Icon: FileText },
+  'API Documentation Writer':      { Icon: FileCode2 },
+  'Technical Debt Assessor':       { Icon: AlertTriangle },
+  'Bug Report Analyst':            { Icon: AlertTriangle },
+  'User Story Writer':             { Icon: ClipboardList },
+  'Performance Review Writer':     { Icon: BarChart3 },
+  'Press Release Drafter':         { Icon: Megaphone },
+  'Pitch Deck Critiquer':          { Icon: Award },
+  'Market Research Analyst':       { Icon: BarChart2 },
+  'Business Plan Builder':         { Icon: Building2 },
+  'Risk Assessment Writer':        { Icon: ShieldAlert },
+  'Change Management Guide':       { Icon: TrendingUp },
+  'Training Material Creator':     { Icon: GraduationCap },
+  'SOP Document Writer':           { Icon: FileText },
+  'Customer Journey Mapper':       { Icon: Target },
+  'A/B Test Designer':             { Icon: FlaskConical },
+  'Pricing Strategy Advisor':      { Icon: DollarSign },
+  'Partnership Outreach Writer':   { Icon: Send },
+  'Investor Relations Writer':     { Icon: TrendingUp },
+  'Executive Summary Writer':      { Icon: FileText },
+
+  // ── MCP Servers (original, IDs 60–67) → terminal treatment ───────────────
+  'Local Knowledge Base MCP': { Icon: HardDrive,  snippet: '> search "quarterly report"' },
+  'SQLite Explorer MCP':       { Icon: Table2,     snippet: '> query users LIMIT 10' },
   'Obsidian Vault MCP':        { Icon: BookMarked, snippet: '> note "team meeting"' },
-  'iCal Calendar MCP':         { Icon: Calendar,  snippet: '> events today' },
-  'Web Clipper MCP':           { Icon: Globe,     snippet: '> clip example.com/blog' },
-  'CSV Analytics MCP':         { Icon: BarChart3, snippet: '> query data.csv' },
-  'Bookmark Manager MCP':      { Icon: Bookmark,  snippet: '> find "react hooks"' },
-  'Time Tracker MCP':          { Icon: Clock,     snippet: '> timer start coding' },
-  // Prompt Packs → stat treatment
+  'iCal Calendar MCP':         { Icon: Calendar,   snippet: '> events today' },
+  'Web Clipper MCP':           { Icon: Globe,      snippet: '> clip example.com/blog' },
+  'CSV Analytics MCP':         { Icon: BarChart3,  snippet: '> query data.csv' },
+  'Bookmark Manager MCP':      { Icon: Bookmark,   snippet: '> find "react hooks"' },
+  'Time Tracker MCP':          { Icon: Clock,      snippet: '> timer start coding' },
+
+  // ── New MCP Servers (IDs 170–181) → terminal treatment ───────────────────
+  'GitHub MCP':          { Icon: GitMerge,   snippet: '> list repos owner/project' },
+  'Notion MCP':          { Icon: FileText,   snippet: '> search "Q3 roadmap"' },
+  'Google Calendar MCP': { Icon: Calendar,   snippet: '> events this week' },
+  'Jira MCP':            { Icon: ClipboardList, snippet: '> issues sprint 12' },
+  'Linear MCP':          { Icon: Target,     snippet: '> cycle ENG-42 status' },
+  'Airtable MCP':        { Icon: Table2,     snippet: '> query CRM limit 20' },
+  'Todoist MCP':         { Icon: CheckSquare, snippet: '> tasks overdue' },
+  'RSS Feed MCP':        { Icon: Radio,      snippet: '> feed techcrunch latest' },
+  'Weather MCP':         { Icon: Cloud,      snippet: '> forecast London 3d' },
+  'HackerNews MCP':      { Icon: TrendingUp, snippet: '> top stories today' },
+  'Spotify MCP':         { Icon: Music,      snippet: '> now playing' },
+  'PDF Reader MCP':      { Icon: FileText,   snippet: '> read contract.pdf' },
+
+  // ── Original Prompt Packs (IDs 80–99) → stat treatment ───────────────────
   'Startup Fundraising Pack':      { Icon: DollarSign,     badge: '12 prompts' },
   'SaaS Growth Marketing Pack':    { Icon: TrendingUp,     badge: '12 prompts' },
   'Real Estate Agent Pack':        { Icon: Home,            badge: '12 prompts' },
@@ -74,11 +120,86 @@ const LISTING_ICON_MAP = {
   'Event Planning Pack':           { Icon: CalendarCheck,   badge: '12 prompts' },
   'Technical Writing Pack':        { Icon: FileText,        badge: '12 prompts' },
   'Personal Productivity Pack':    { Icon: CheckSquare,     badge: '12 prompts' },
-  // Bundles → grid treatment
-  'Developer Starter Bundle': {
-    Icon: Package,
-    gridIcons: [GitMerge, ShieldAlert, FlaskConical, Database],
-  },
+
+  // ── New Prompt Packs (IDs 100–139) → stat treatment ──────────────────────
+  'Architecture & Interior Design Pack': { Icon: Home,          badge: '12 prompts' },
+  'Legal Research Pack':                 { Icon: Scale,          badge: '12 prompts' },
+  'Investment & Wealth Management Pack': { Icon: TrendingUp,     badge: '12 prompts' },
+  'Restaurant & Hospitality Pack':       { Icon: Utensils,       badge: '12 prompts' },
+  'Travel Planning & Tourism Pack':      { Icon: Globe,          badge: '12 prompts' },
+  'Construction & Trades Pack':          { Icon: Home,           badge: '12 prompts' },
+  'Fashion & Retail Pack':               { Icon: ShoppingBag,    badge: '12 prompts' },
+  'Gaming & Esports Pack':               { Icon: Trophy,         badge: '12 prompts' },
+  'Parenting & Family Pack':             { Icon: Heart,          badge: '12 prompts' },
+  'Mental Health Coaching Pack':         { Icon: Heart,          badge: '12 prompts' },
+  'Academic Research Pack':              { Icon: GraduationCap,  badge: '12 prompts' },
+  'Healthcare Administration Pack':      { Icon: Briefcase,      badge: '12 prompts' },
+  'Automotive Services Pack':            { Icon: Car,            badge: '12 prompts' },
+  'Photography & Videography Pack':      { Icon: Camera,         badge: '12 prompts' },
+  'Music Production Pack':               { Icon: Music,          badge: '12 prompts' },
+  'Sports Coaching Pack':                { Icon: Trophy,         badge: '12 prompts' },
+  'Pet Care & Veterinary Pack':          { Icon: Heart,          badge: '12 prompts' },
+  'Consulting & Advisory Pack':          { Icon: Briefcase,      badge: '12 prompts' },
+  'Accounting & Bookkeeping Pack':       { Icon: BarChart3,      badge: '12 prompts' },
+  'Cybersecurity Awareness Pack':        { Icon: ShieldAlert,    badge: '12 prompts' },
+  'DevOps & Platform Engineering Pack':  { Icon: Server,         badge: '12 prompts' },
+  'UX Research & Design Pack':           { Icon: Paintbrush,     badge: '12 prompts' },
+  'Executive Leadership Pack':           { Icon: Building2,      badge: '12 prompts' },
+  'Community Management Pack':           { Icon: Users,          badge: '12 prompts' },
+  'Cooking & Food Business Pack':        { Icon: Utensils,       badge: '12 prompts' },
+  'Home & DIY Improvement Pack':         { Icon: Home,           badge: '12 prompts' },
+  'Sustainability & ESG Pack':           { Icon: Leaf,           badge: '12 prompts' },
+  'Immigration & Relocation Pack':       { Icon: Globe,          badge: '12 prompts' },
+  'Retirement & Estate Planning Pack':   { Icon: Wallet,         badge: '12 prompts' },
+  'Charity & Fundraising Pack':          { Icon: Heart,          badge: '12 prompts' },
+  'Language Learning Pack':              { Icon: MessageSquare,  badge: '12 prompts' },
+  'Film & TV Production Pack':           { Icon: Film,           badge: '12 prompts' },
+  'Publishing & Author Pack':            { Icon: BookOpen,       badge: '12 prompts' },
+  'Logistics & Supply Chain Pack':       { Icon: Truck,          badge: '12 prompts' },
+  'Customer Success Pack':               { Icon: Headphones,     badge: '12 prompts' },
+  'Recruitment Agency Pack':             { Icon: UserCheck,      badge: '12 prompts' },
+  'Science & Lab Research Pack':         { Icon: FlaskConical,   badge: '12 prompts' },
+  'Insurance & Risk Pack':               { Icon: Scale,          badge: '12 prompts' },
+  'Public Relations Pack':               { Icon: Megaphone,      badge: '12 prompts' },
+  'Political & Policy Writing Pack':     { Icon: FileText,       badge: '12 prompts' },
+
+  // ── Workflows (IDs 190–199) → abstract treatment ──────────────────────────
+  'Blog Post to Social Campaign':         { Icon: Share2 },
+  'Lead Capture to CRM Entry':            { Icon: UserCheck },
+  'Weekly Team Standup Digest':           { Icon: ClipboardList },
+  'Customer Feedback Triage Pipeline':    { Icon: MessageSquare },
+  'Job Application Tracking Workflow':    { Icon: Briefcase },
+  'Monthly Financial Review Workflow':    { Icon: BarChart3 },
+  'Content Audit & Refresh Workflow':     { Icon: Search },
+  'Bug Triage to Sprint Ticket Workflow': { Icon: AlertTriangle },
+  'New Employee Onboarding Workflow':     { Icon: Users },
+  'Press Release Distribution Workflow':  { Icon: Send },
+
+  // ── Templates (IDs 210–219) → abstract treatment ─────────────────────────
+  'B2B SaaS Pitch Deck Template':       { Icon: TrendingUp },
+  'Business Plan Template':             { Icon: Building2 },
+  'Marketing Strategy Template':        { Icon: Target },
+  'Employee Handbook Template':         { Icon: Users },
+  'Client Proposal Template':           { Icon: Briefcase },
+  'OKR Setting Template':               { Icon: Target },
+  'Sales Playbook Template':            { Icon: BarChart2 },
+  'Content Calendar Template':          { Icon: Calendar },
+  'Technical Architecture Template':    { Icon: Database },
+  'Product Launch Checklist Template':  { Icon: CheckSquare },
+
+  // ── Bundles → grid treatment ──────────────────────────────────────────────
+  'Developer Starter Bundle':   { Icon: Package, gridIcons: [GitMerge, ShieldAlert, FlaskConical, Database] },
+  'Complete Marketing Bundle':  { Icon: Package, gridIcons: [PenLine, Share2, Search, Mic] },
+  'Startup Founder Bundle':     { Icon: Package, gridIcons: [Building2, LayoutDashboard, BarChart2, DollarSign] },
+  'Developer Pro Bundle':       { Icon: Package, gridIcons: [GitMerge, ShieldAlert, FlaskConical, Eye] },
+  'Small Business Bundle':      { Icon: Package, gridIcons: [Mail, Headphones, Scale, ShoppingBag] },
+  'Content Creator Bundle':     { Icon: Package, gridIcons: [PenLine, Mic, Radio, Share2] },
+  'HR & People Bundle':         { Icon: Package, gridIcons: [Users, BarChart3, ClipboardList, GraduationCap] },
+  'Sales Pro Bundle':           { Icon: Package, gridIcons: [Send, Target, BarChart2, DollarSign] },
+
+  // ── Placeholder listings (IDs 1–3) ───────────────────────────────────────
+  'Weekly Report Automator':  { Icon: BarChart3 },
+  'SaaS Onboarding Template': { Icon: Building2 },
 }
 
 const CATEGORY_GRADIENTS = {
